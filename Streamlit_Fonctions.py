@@ -3,7 +3,7 @@
 import numpy as np
 import streamlit as st
 # from flask import jsonify
-import sklearn
+#import sklearn
 from sklearn.preprocessing import StandardScaler
 from P7_Scoring.Features_extractions import *
 from P7_Scoring.Model_extraction import *
