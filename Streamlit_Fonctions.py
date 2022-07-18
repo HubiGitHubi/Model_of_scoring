@@ -3,56 +3,58 @@
 import numpy as np
 import streamlit as st
 # from flask import jsonify
-from matplotlib import pyplot as plt
 from sklearn.preprocessing import StandardScaler
 from P7_Scoring.Features_extractions import *
 from P7_Scoring.Model_extraction import *
-import streamlit.components as components
+import streamlit.components.v1 as components
 
 
-def choose_id(df, my_model, cols):
-    data_clients_std = StandardScaler().fit_transform(df.drop(['TARGET', 'SK_ID_CURR'], axis=1))
-    data_clients_std = pd.DataFrame(data_clients_std, columns=cols)
-    df['score'] = my_model.predict(data_clients_std)
+def choose_id_client(df):
+    # Input for the id_client
     min_id, max_id = df.SK_ID_CURR.min(), df.SK_ID_CURR.max()
-
     id_client = st.number_input("Select the id client", min_id, max_id, value=100005)
 
+    return id_client
+
+
+def Calculate_all_score(df, model, cols):
+    # Calculate score for every client and store it in df
+    data_clients_std = StandardScaler().fit_transform(df.drop(['TARGET', 'SK_ID_CURR'], axis=1))
+    data_clients_std = pd.DataFrame(data_clients_std, columns=cols)
+    df['score'] = model.predict(data_clients_std)
+    return data_clients_std
+
+
+def calculate_score_id_client(id_client, df, data_clients_std):
+    #Return the score of the choosen client. If the client is not in the dtb, return -1
     data_client = data_clients_std[df.SK_ID_CURR == id_client]
 
     if len(data_client) > 0:
         score = int(df.score[df.SK_ID_CURR == id_client])
-        # score = int(my_model.predict(data_client))
     else:
         score = -1
 
-    # st.write("0", df.SK_ID_CURR[df.score == 0][0:3].T)
-    # st.write("1", df.SK_ID_CURR[df.score == 1][0:3].T)
-
-    return score, id_client, df, data_clients_std  # jsonify(_json.load(score.to_json()))
+    return score  # jsonify(_json.load(score.to_json()))
 
 
 def score_to_score_str(score: int):
+    # markdown the status with color : green: accepted, red: refused, yellow : not in the db
     st.markdown("loan status :")
     if score == 0:
-        score_str = 'accepted'
         st.success("accepted")
     elif score == 1:
         st.error("refused")
-        score_str = 'refused'
     else:
-        st.warning("This client is not in the database")
-
-        score_str = 'This client is not in the database'
-    return score_str
+        st.warning("This client's not in the database")
 
 
-def features_importance_global(my_model, cols, df, id_client):
+# noinspection PyProtectedMember
+def features_importance_global(model, cols, df, id_client):
     try:
-        feat_importance = pd.DataFrame(np.array(my_model.best_estimator_._final_estimator.feature_importances_[0]),
+        feat_importance = pd.DataFrame(np.array(model.best_estimator_._final_estimator.feature_importances_[0]),
                                        columns=["feat_importance"])
     except:
-        feat_importance = pd.DataFrame(np.array(my_model.best_estimator_._final_estimator.coef_[0]),
+        feat_importance = pd.DataFrame(np.array(model.best_estimator_._final_estimator.coef_[0]),
                                        columns=["feat_importance"])
 
     df_feat_importance = pd.concat([feat_importance, cols], axis=1).sort_values(by='feat_importance', ascending=False)
@@ -78,28 +80,30 @@ def features_importance_global(my_model, cols, df, id_client):
         st.bar_chart(df_feat_importance.loc[ind:ind, feat_plot])
 
 
-def local_importance(my_model, df, data_clients_std, id_client, explainer, cols):
+def local_importance(model, df, data_clients_std, id_client, explainer):
     with open('explainer', 'wb') as f:
         dill.dump(explainer, f)
 
     explanation = explainer.explain_instance(data_clients_std[df.SK_ID_CURR == id_client].values.reshape(-1),
-                                             my_model.predict_proba,
+                                             model.predict_proba,
                                              num_features=10)
 
     html_lime = explanation.as_html()
-    components.v1.html(html_lime, width=900, height=350, scrolling=True)
+    components.html(html_lime, width=900, height=350, scrolling=True)
 
 
 def main():
     df, df_drop, cols = get_my_df()
-    my_model = get_my_model()
-    score, id_client, df, data_clients_std = choose_id(df, my_model, cols)
-    score_str = score_to_score_str(score)
+    model = get_my_model()
+    id_client = choose_id_client(df)
+    data_clients_std = Calculate_all_score(df, model, cols)
+    score = calculate_score_id_client(id_client, df, data_clients_std)
+    score_to_score_str(score)
 
     if score != -1:
         explainer: object = get_my_explainer(data_clients_std, cols)
-        local_importance(my_model, df, data_clients_std, id_client, explainer, cols)
-        features_importance_global(my_model, cols, df, id_client)
+        local_importance(model, df, data_clients_std, id_client, explainer)
+        features_importance_global(model, cols, df, id_client)
 
 
 # if__main__ == main():
