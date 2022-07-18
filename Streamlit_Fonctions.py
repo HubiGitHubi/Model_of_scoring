@@ -10,7 +10,7 @@ from P7_Scoring.Model_extraction import *
 import streamlit.components.v1 as components
 import pandas as pd
 import pickle
-
+import imblearn
 def choose_id_client(df):
     # Input for the id_client
     min_id, max_id = df.SK_ID_CURR.min(), df.SK_ID_CURR.max()
