@@ -1,5 +1,5 @@
 # import _json
-
+import dill
 import numpy as np
 import streamlit as st
 # from flask import jsonify
@@ -8,7 +8,8 @@ from sklearn.preprocessing import StandardScaler
 from P7_Scoring.Features_extractions import *
 from P7_Scoring.Model_extraction import *
 import streamlit.components.v1 as components
-
+import pandas as pd
+import pickle
 
 def choose_id_client(df):
     # Input for the id_client
