@@ -12,9 +12,12 @@ def choose_id_client(df):
     # Input for the id_client
     min_id, max_id = df.SK_ID_CURR.min(), df.SK_ID_CURR.max()
     id_client = st.number_input("Select the id client", min_id, max_id, value=100005)
-    st.markdown("Not in the Dtb : 100005")
-    st.markdown("accepted :", str(max_id))
-    st.markdown("refused :", str(min_id))
+    st.markdown("Not in the Dtb :")
+    st.markdown(100005)
+    st.markdown("accepted :")
+    st.markdown(max_id)
+    st.markdown("refused :")
+    st.markdown(min_id)
 
     return id_client
 
