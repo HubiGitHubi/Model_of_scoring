@@ -2,20 +2,17 @@
 import dill
 import numpy as np
 import streamlit as st
-# from flask import jsonify
-#import sklearn
+import streamlit.components.v1 as components
 from sklearn.preprocessing import StandardScaler
 from P7_Scoring.Features_extractions import *
 from P7_Scoring.Model_extraction import get_my_model, get_my_explainer
-import streamlit.components.v1 as components
-import pandas as pd
-import pickle
-import imblearn
+
+
 def choose_id_client(df):
     # Input for the id_client
     min_id, max_id = df.SK_ID_CURR.min(), df.SK_ID_CURR.max()
     id_client = st.number_input("Select the id client", min_id, max_id, value=100005)
-
+    st.markdown("Not in the Dtb : 100005, accepted :", max_id, "refused :", min_id)
     return id_client
 
 
