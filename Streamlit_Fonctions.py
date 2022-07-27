@@ -85,7 +85,7 @@ def features_importance_global(model, cols):
 
 
 def plot_feat_importance_values(df_feat_importance):
-    st.bar_chart(df_feat_importance)#.feat_importance.index, df_feat_importance.values)
+    st.bar_chart(df_feat_importance.soert_values(acscending=False))#.feat_importance.index, df_feat_importance.values)
     # for ind in df_feat_importance[0:nb_feat].Features:
     #   st.markdown(ind)
     #   st.bar_chart(df_feat_importance[df_feat_importance.Features == str(ind)][feat_plot].T,
@@ -122,12 +122,8 @@ def main():
     score_to_score_str(score)
 
     df_feat_importance = features_importance_global(model, cols)
-    #df_feat_importance = calcul_plot_feat_importance_glob_values(df_feat_importance, df_to_predict, id_client)
     plot_feat_importance_values(df_feat_importance)
     if score != -1:
-        df_feat_importance = features_importance_global(model, cols)
-        #df_feat_importance = calcul_plot_feat_importance_glob_values(df_feat_importance, df_to_predict, id_client)
-        plot_feat_importance_values(df_feat_importance)
         explainer = get_my_explainer(data_clients_std, cols)
         local_importance(model, df_to_predict, data_clients_std, id_client, explainer)
 
