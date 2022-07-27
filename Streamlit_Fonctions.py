@@ -88,7 +88,7 @@ def plot_feat_importance_values(df_feat_importance):
     # width = 2
     # height = 200
     st.write(df_feat_importance.head())
-    df_feat_importance = df_feat_importance.reset_index()
+    #df_feat_importance = df_feat_importance.reset_index()
     st.markdown('In favor of the loan :')
     st.write(df_feat_importance.feat_importance.values)
     st.write(df_feat_importance.index)
