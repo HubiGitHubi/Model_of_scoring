@@ -92,9 +92,7 @@ def plot_feat_importance_values(df_feat_importance):
     height = 200
     df_feat_importance = df_feat_importance.reset_index()
     st.markdown('In favor of the loan :')
-    st.bar_chart(df_feat_importance,
-                 width=width,
-                 height=height)
+    st.bar_chart(df_feat_importance)
     #for ind in df_feat_importance[0:nb_feat].Features:
      #   st.markdown(ind)
      #   st.bar_chart(df_feat_importance[df_feat_importance.Features == str(ind)][feat_plot].T,
