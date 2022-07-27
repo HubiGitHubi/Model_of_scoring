@@ -1,5 +1,7 @@
 import pickle
-#import imblearn *
+
+
+# import imblearn *
 
 def get_my_model() -> object:
     """
@@ -21,13 +23,7 @@ def get_my_model() -> object:
 
 
 def get_my_explainer(data_clients_std, cols):
-    # Charger l'explainer'
-
-    # with open('C:/Users/33646/Documents/OpenClassroom/Projet 7/Model_of_scoring/Datas/explainer', 'rb') as f:
-    # explainer = dill.load(f, errors="ignore")
-
-    # return explainer
-
+    # Charge the explainer'
     try:
         with open('C:/Users/33646/Documents/OpenClassroom/Projet 7/Model_of_scoring/Datas/explainer', 'rb') as f:
             explainer = pickle.load(f, errors="ignore")

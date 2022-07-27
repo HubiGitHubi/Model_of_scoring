@@ -8,11 +8,11 @@ from P7_Scoring.Features_extractions import *
 from P7_Scoring.Model_extraction import get_my_model, get_my_explainer
 
 
-def choose_id_client(df):
+def choose_id_client(df_to_predict):
     # Input for the id_client
-    min_id, max_id = df.SK_ID_CURR.min(), df.SK_ID_CURR.max()
+    min_id, max_id = df_to_predict.SK_ID_CURR.min(), df_to_predict.SK_ID_CURR.max()
     id_client = st.number_input("Select the id client", min_id, max_id, value=100005)
-    st.markdown("Not in the Dtb :")
+    st.markdown("Not in the Database :")
     st.markdown(100005)
     st.markdown("accepted :")
     st.markdown(max_id)
@@ -22,25 +22,31 @@ def choose_id_client(df):
     return id_client
 
 
-def Calculate_all_score(df, model):
+def Calculate_all_score(df_to_predict, model):
     # Calculate score for every client and store it in df
-    data_clients_std = pd.DataFrame(StandardScaler().fit_transform(df.drop(['TARGET', 'SK_ID_CURR'], axis=1)),
-                                    columns=df.drop(['SK_ID_CURR', 'TARGET'], axis=1).columns)
-    df['score'] = model.predict(data_clients_std)
+    data_clients_std = pd.DataFrame(StandardScaler().fit_transform(df_to_predict.drop(['SK_ID_CURR'], axis=1)),
+                                    columns=df_to_predict.drop(['SK_ID_CURR'], axis=1).columns)
+    df_to_predict['score'] = model.predict(data_clients_std)
 
     return data_clients_std
 
 
-def calculate_score_id_client(id_client, df, data_clients_std):
+def calculate_data_client(id_client, df_to_predict, data_clients_std):
     # Return the score of the chosen client. If the client is not in the dtb, return -1
-    data_client = data_clients_std[df.SK_ID_CURR == id_client]
+    data_client = data_clients_std[df_to_predict.SK_ID_CURR == id_client]
+
+    return data_client  # jsonify(_json.load(score.to_json()))
+
+
+def calculate_score_id_client(id_client, df_to_predict, data_client):
+    # Return the score of the chosen client. If the client is not in the dtb, return -1
 
     if len(data_client) > 0:
-        score = int(df.score[df.SK_ID_CURR == id_client])
+        score = int(df_to_predict.score[df_to_predict.SK_ID_CURR == id_client])
     else:
         score = -1
 
-    return score, data_client  # jsonify(_json.load(score.to_json()))
+    return score  # jsonify(_json.load(score.to_json()))
 
 
 def score_to_score_str(score: int):
@@ -86,18 +92,21 @@ def plot_feat_importance_values(df_feat_importance):
     height = 200
     df_feat_importance = df_feat_importance.reset_index()
     st.markdown('In favor of the loan :')
-    for ind in df_feat_importance[0:nb_feat].Features:
-        st.markdown(ind)
-        st.bar_chart(df_feat_importance[df_feat_importance.Features == str(ind)][feat_plot].T,
-                     width=width,
-                     height=height)
+    st.bar_chart(df_feat_importance,
+                 width=width,
+                 height=height)
+    #for ind in df_feat_importance[0:nb_feat].Features:
+     #   st.markdown(ind)
+     #   st.bar_chart(df_feat_importance[df_feat_importance.Features == str(ind)][feat_plot].T,
+     #                width=width,
+     #                height=height)
 
-    st.markdown('Against the loan :')
-    for ind in df_feat_importance[-nb_feat:].Features:
-        st.markdown(ind)
-        st.bar_chart(df_feat_importance[df_feat_importance.Features == ind][feat_plot].T,
-                     width=width,
-                     height=height)
+    #st.markdown('Against the loan :')
+    #for ind in df_feat_importance[-nb_feat:].Features:
+    #    st.markdown(ind)
+    #    st.bar_chart(df_feat_importance[df_feat_importance.Features == ind][feat_plot].T,
+    #                 width=width,
+    #                 height=height)
 
 
 def local_importance(model, df, data_clients_std, id_client, explainer):
@@ -113,11 +122,12 @@ def local_importance(model, df, data_clients_std, id_client, explainer):
 
 
 def main():
-    df, df_drop, cols = get_my_df()
+    df, df_drop, cols, df_to_predict = get_train_test()
     model = get_my_model()
     id_client = choose_id_client(df)
     data_clients_std = Calculate_all_score(df, model)
-    score, data_client = calculate_score_id_client(id_client, df, data_clients_std)
+    data_client = calculate_data_client(id_client, df, data_clients_std)
+    score = calculate_score_id_client(id_client, df, data_client)
     score_to_score_str(score)
 
     if score != -1:
