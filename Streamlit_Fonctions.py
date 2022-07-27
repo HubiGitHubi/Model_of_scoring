@@ -11,7 +11,7 @@ from P7_Scoring.Model_extraction import get_my_model, get_my_explainer
 def choose_id_client(df_to_predict):
     # Input for the id_client
     min_id, max_id = df_to_predict.SK_ID_CURR.min(), df_to_predict.SK_ID_CURR.max()
-    id_client = st.number_input("Select the id client", min_id, max_id, value=100004)
+    id_client = st.number_input("Select the id client", min_id, max_id)#, value=100004)
     st.markdown("Not in the Database :")
     st.markdown(100005)
     st.markdown("accepted :")
@@ -24,8 +24,9 @@ def choose_id_client(df_to_predict):
 
 def Calculate_all_score(df_to_predict, df_drop, model):
     # Calculate score for every client and store it in df
+    #print(df_drop.shape, df_to_predict.drop(['SK_ID_CURR'], axis=1).shape)
     data_clients_std = pd.DataFrame(StandardScaler().fit(df_drop).transform(df_to_predict.drop(['SK_ID_CURR'], axis=1)),
-                                    columns=df_to_predict.drop(['SK_ID_CURR'], axis=1).columns)
+                                    columns=df_drop.columns)
     df_to_predict['score'] = model.predict(data_clients_std.values)
     return data_clients_std
 
