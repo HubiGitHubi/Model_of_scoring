@@ -3,39 +3,44 @@ import dill
 import numpy as np
 import streamlit as st
 import streamlit.components.v1 as components
+from matplotlib import pyplot as plt
 from sklearn.preprocessing import StandardScaler
-from P7_Scoring.Features_extractions import *
-from P7_Scoring.Model_extraction import get_my_model, get_my_explainer
-
-#Local URL: http: // localhost: 8501
-#Network URL: http: // 192.168.1.27:8501
+from P7_Scoring.Extraction import *
 
 
+# Local URL: http: // localhost: 8501
+# Network URL: http: // 192.168.1.27:8501
 
-def choose_id_client(df_to_predict):
-    # Input for the id_client
+
+def add_side_bar(df_to_predict):
+    # Add the page with settings and store the settings
+
     min_id, max_id = df_to_predict.SK_ID_CURR.min(), df_to_predict.SK_ID_CURR.max()
-    id_client = st.number_input("Select the id client", min_id, max_id)  # , value=100004)
-    #st.markdown("Not in the Database :")
-    #st.markdown(100005)
-    #st.markdown("accepted :")
-    #st.markdown(max_id)
-    ##st.markdown("refused :")
-    #st.markdown(min_id)
+    id_client = st.sidebar.number_input("Select the id client", min_id, max_id)
 
-    return id_client
+    Choose_pop = st.sidebar.selectbox(
+        "Compare to the population : ",
+        ("Who asks for a loan", "Who already has/had a loan", "Both"))
+
+    yes_no_feat_glob = st.sidebar.selectbox(
+        "Do you want the global features importance ? : ",
+        ("Yes", "No"))
+    nb_feats = st.sidebar.slider(
+        "How many local features do you want ?", 0, 15, step=2)
+    return id_client, Choose_pop, yes_no_feat_glob, nb_feats
 
 
 def Calculate_all_scores(df_to_predict, df_drop, model):
     # Calculate score for every client and store it in df
+    data_clients_std_train = pd.DataFrame(StandardScaler().fit(df_drop).transform(df_drop), columns=df_drop.columns)
     data_clients_std = pd.DataFrame(StandardScaler().fit(df_drop).transform(df_to_predict.drop(['SK_ID_CURR'], axis=1)),
                                     columns=df_drop.columns)
     df_to_predict['score'] = model.predict(data_clients_std.values)
-    return data_clients_std
+    return data_clients_std, data_clients_std_train
 
 
 def calculate_data_client(id_client, df_to_predict, data_clients_std):
-    # Return the score of the chosen client. If the client is not in the dtb, return -1
+    # Return the data of the chosen client
     data_client = data_clients_std[df_to_predict.SK_ID_CURR == id_client]
 
     return data_client  # jsonify(_json.load(score.to_json()))
@@ -50,6 +55,20 @@ def calculate_score_id_client(id_client, df_to_predict, data_client):
         score = -1
 
     return score  # jsonify(_json.load(score.to_json()))
+
+
+def predict_proba_client(data_client, model):
+    # Return proba of success/failure of a client
+    proba_client = model.predict_proba(data_client)
+    return proba_client
+
+
+def plot_proba_client(proba_client):
+    # Plot the proba client
+    st.write("Acceptation rate")
+    st.success(proba_client[0][0])
+    st.write("Default rate")
+    st.error(proba_client[0][1])
 
 
 def score_to_score_str(score: int):
@@ -78,63 +97,85 @@ def features_importance_global(model, cols):
     return df_feat_importance
 
 
-# def calcul_plot_feat_importance_glob_values(df_feat_importance, df, id_client):
-# df_feat_importance['mean_clients_accepted'] = [df[col][df.score == 0].mean() for col in df_feat_importance.index]
-# df_feat_importance['mean_clients_refused'] = [df[col][df.score == 1].mean() for col in df_feat_importance.index]
-# df_feat_importance['data_client'] = [float(df[col][df.SK_ID_CURR == id_client].values) for col in
-#  df_feat_importance.index
-#  ]
+def hist_feats_glob(df_feat_importance, nb_feats, df_to_predict):
+    val_pos = df_feat_importance.index[0:nb_feats // 2]
+    st.write("Feat in favor of the loan :")
+    for val in val_pos:
+        st.write(val)
+        fig, ax = plt.subplots()
+        hist = ax.hist(df_to_predict[val], bins=50)
+        st.pyplot(fig)
 
-# return df_feat_importance
+    val_neg = df_feat_importance.index[-nb_feats // 2:]
+    st.write("Feat against the loan :")
+    fig, ax = plt.subplots()
+    compt = -1
+    for val in val_neg:
+        compt += 1
+        st.write(val)
+        fig, ax = plt.subplots()
+        ax.hist(df_to_predict[val], bins=50)
+        st.pyplot(fig)
 
 
 def plot_feat_importance_values(df_feat_importance):
-    df_feat_importance = df_feat_importance.reset_index()
-
     df_feat_importance = df_feat_importance.sort_values(by='feat_importance', ascending=False)
-    st.write(df_feat_importance)
-    st.bar_chart(df_feat_importance[['feat_importance', 'Features']])
-
-    # for ind in df_feat_importance[0:nb_feat].Features:
-    #   st.markdown(ind)
-    #   st.bar_chart(df_feat_importance[df_feat_importance.Features == str(ind)][feat_plot].T,
-    #                width=width,
-    #                height=height)
-
-    # st.markdown('Against the loan :')
-    # for ind in df_feat_importance[-nb_feat:].Features:
-    #    st.markdown(ind)
-    #    st.bar_chart(df_feat_importance[df_feat_importance.Features == ind][feat_plot].T,
-    #                 width=width,
-    #                 height=height)
+    st.write("Global feature importance")
+    st.bar_chart(df_feat_importance, height=500)
 
 
-def local_importance(model, df_to_predict, data_clients_std, id_client, explainer):
+def local_importance(model, df_to_predict, data_clients_std, id_client, explainer, nb_feats):
     with open('explainer', 'wb') as f:
         dill.dump(explainer, f)
 
     explanation = explainer.explain_instance(data_clients_std[df_to_predict.SK_ID_CURR == id_client].values.reshape(-1),
                                              model.predict_proba,
-                                             num_features=10)
+                                             num_features=nb_feats)
+    # html_lime = explanation.as_html()
+    # components.html(html_lime, width=900, height=350, scrolling=True)
+    explanation_list = explanation.as_list()
+    with plt.style.context("ggplot"):
+        st.pyplot(explanation.as_pyplot_figure())
+    return explanation_list
 
-    html_lime = explanation.as_html()
-    components.html(html_lime, width=900, height=350, scrolling=True)
+
+def find_loc_feat_importance(explanation_list, df_to_predict):
+    liste = []
+    final_list = []
+
+
+    for i in explanation_list:
+        liste.append(i.split(" "))
+    for i in liste:
+        try:
+            df_to_predict[i].columns
+            final_list.append(i)
+        except:
+            a = 1
+    return final_list
 
 
 def main():
     df, df_drop, cols, df_to_predict = get_train_test()
+    id_client, Choose_pop, yes_no_feat_glob, nb_feats = add_side_bar(df_to_predict)
     model = get_my_model()
-    id_client = choose_id_client(df_to_predict)
-    data_clients_std = Calculate_all_scores(df_to_predict, df_drop, model)
+    data_clients_std, data_clients_std_train = Calculate_all_scores(df_to_predict, df_drop, model)
     data_client = calculate_data_client(id_client, df_to_predict, data_clients_std)
     score = calculate_score_id_client(id_client, df_to_predict, data_client)
+    proba_client = predict_proba_client(data_client, model)
     score_to_score_str(score)
+    plot_proba_client(proba_client)
 
-    df_feat_importance = features_importance_global(model, cols)
-    plot_feat_importance_values(df_feat_importance)
+    if yes_no_feat_glob == 'Yes':
+        df_feat_importance = features_importance_global(model, cols)
+        plot_feat_importance_values(df_feat_importance)
+
     if score != -1:
         explainer = get_my_explainer(data_clients_std, cols)
-        local_importance(model, df_to_predict, data_clients_std, id_client, explainer)
+        explanation_list = local_importance(model, df_to_predict, data_clients_std, id_client, explainer, nb_feats)
+        if nb_feats > 0:
+            final_list = find_loc_feat_importance(explanation_list, df_to_predict)
+            hist_feats_glob(df_feat_importance, nb_feats, df_to_predict)
 
 
 # if__main__ == main():

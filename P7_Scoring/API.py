@@ -13,7 +13,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 from sklearn.preprocessing import StandardScaler
 from P7_Scoring.Features_extractions import *
-from P7_Scoring.Model_extraction import get_my_model, get_my_explainer
+from P7_Scoring.Extraction import get_my_model, get_my_explainer
 
 app = Flask(__name__)
 
