@@ -8,6 +8,7 @@ from P7_Scoring.Features_extractions import *
 from P7_Scoring.Model_extraction import get_my_model, get_my_explainer
 import altair as alt
 
+
 def choose_id_client(df_to_predict):
     # Input for the id_client
     min_id, max_id = df_to_predict.SK_ID_CURR.min(), df_to_predict.SK_ID_CURR.max()
@@ -90,11 +91,10 @@ def plot_feat_importance_values(df_feat_importance):
 
     st.bar_chart(df_feat_importance)
 
-    alt.Chart(df_feat_importance).mark_bar().encode(
-        x=alt.X('Importance', sort=None),
-        y='Feat',
-    )
-
+    #alt.Chart(df_feat_importance).mark_bar().encode(
+    #    x=alt.X('Importance', sort=None),
+     #   y='Feat',
+    #)
 
     # for ind in df_feat_importance[0:nb_feat].Features:
     #   st.markdown(ind)

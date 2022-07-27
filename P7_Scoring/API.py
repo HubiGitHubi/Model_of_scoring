@@ -46,7 +46,7 @@ def Calculate_all_score(df, model):
 
     return data_clients_std
 
-def
+
 @app.route("/")
 def calculate_data_client(id_client, df, data_clients_std):
     # Return the score of the chosen client. If the client is not in the dtb, return -1
