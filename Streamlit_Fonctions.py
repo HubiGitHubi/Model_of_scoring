@@ -87,6 +87,7 @@ def calcul_plot_feat_importance_glob_values(df_feat_importance, df, id_client):
 def plot_feat_importance_values(df_feat_importance):
     # width = 2
     # height = 200
+    st.write(df_feat_importance.head())
     df_feat_importance = df_feat_importance.reset_index()
     st.markdown('In favor of the loan :')
     st.bar_chart(df_feat_importance)
