@@ -11,7 +11,7 @@ from P7_Scoring.Model_extraction import get_my_model, get_my_explainer
 def choose_id_client(df_to_predict):
     # Input for the id_client
     min_id, max_id = df_to_predict.SK_ID_CURR.min(), df_to_predict.SK_ID_CURR.max()
-    id_client = st.number_input("Select the id client", min_id, max_id)#, value=100004)
+    id_client = st.number_input("Select the id client", min_id, max_id)  # , value=100004)
     st.markdown("Not in the Database :")
     st.markdown(100005)
     st.markdown("accepted :")
@@ -74,18 +74,18 @@ def features_importance_global(model, cols):
     return df_feat_importance
 
 
-#def calcul_plot_feat_importance_glob_values(df_feat_importance, df, id_client):
-    #df_feat_importance['mean_clients_accepted'] = [df[col][df.score == 0].mean() for col in df_feat_importance.index]
-    #df_feat_importance['mean_clients_refused'] = [df[col][df.score == 1].mean() for col in df_feat_importance.index]
-    #df_feat_importance['data_client'] = [float(df[col][df.SK_ID_CURR == id_client].values) for col in
-                                       #  df_feat_importance.index
-                                       #  ]
+# def calcul_plot_feat_importance_glob_values(df_feat_importance, df, id_client):
+# df_feat_importance['mean_clients_accepted'] = [df[col][df.score == 0].mean() for col in df_feat_importance.index]
+# df_feat_importance['mean_clients_refused'] = [df[col][df.score == 1].mean() for col in df_feat_importance.index]
+# df_feat_importance['data_client'] = [float(df[col][df.SK_ID_CURR == id_client].values) for col in
+#  df_feat_importance.index
+#  ]
 
-    #return df_feat_importance
+# return df_feat_importance
 
 
 def plot_feat_importance_values(df_feat_importance):
-    st.bar_chart(df_feat_importance.sort_values(acscending=False))#.feat_importance.index, df_feat_importance.values)
+    st.bar_chart(df_feat_importance.sort_values(ascending=False))
     # for ind in df_feat_importance[0:nb_feat].Features:
     #   st.markdown(ind)
     #   st.bar_chart(df_feat_importance[df_feat_importance.Features == str(ind)][feat_plot].T,
