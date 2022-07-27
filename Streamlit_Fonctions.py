@@ -25,7 +25,7 @@ def choose_id_client(df_to_predict):
 def Calculate_all_scores(df_to_predict, df_drop, model):
     # Calculate score for every client and store it in df
     print(df_drop.shape, df_to_predict.drop(['SK_ID_CURR'], axis=1).shape)
-    data_clients_std = pd.DataFrame(StandardScaler().fit(df_drop).transform(df_to_predict.drop(['SK_ID_CURR'], axis=1)),
+    data_clients_std = pd.DataFrame(StandardScaler().fit(df_drop).transform(df_to_predict.drop(['SK_ID_CURR','TARGET'], axis=1)),
                                     columns=df_drop.columns)
     print(data_clients_std)
     df_to_predict['score'] = model.predict(data_clients_std.values)
