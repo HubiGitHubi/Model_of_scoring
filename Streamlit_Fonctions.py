@@ -11,7 +11,7 @@ from P7_Scoring.Model_extraction import get_my_model, get_my_explainer
 def choose_id_client(df_to_predict):
     # Input for the id_client
     min_id, max_id = df_to_predict.SK_ID_CURR.min(), df_to_predict.SK_ID_CURR.max()
-    id_client = st.number_input("Select the id client", min_id, max_id, value=100005)
+    id_client = st.number_input("Select the id client", min_id, max_id, value=100004)
     st.markdown("Not in the Database :")
     st.markdown(100005)
     st.markdown("accepted :")
@@ -26,7 +26,7 @@ def Calculate_all_score(df_to_predict, model):
     # Calculate score for every client and store it in df
     data_clients_std = pd.DataFrame(StandardScaler().fit_transform(df_to_predict.drop(['SK_ID_CURR'], axis=1)),
                                     columns=df_to_predict.drop(['SK_ID_CURR'], axis=1).columns)
-    df_to_predict['score'] = model.predict(data_clients_std)
+    df_to_predict['score'] = model.predict(data_clients_std.values)
 
     return data_clients_std
 
@@ -86,21 +86,19 @@ def calcul_plot_feat_importance_glob_values(df_feat_importance, df, id_client):
 
 
 def plot_feat_importance_values(df_feat_importance):
-    feat_plot = ['data_client', 'mean_clients_accepted', 'mean_clients_refused']
-    nb_feat = 3
-    width = 2
-    height = 200
+    # width = 2
+    # height = 200
     df_feat_importance = df_feat_importance.reset_index()
     st.markdown('In favor of the loan :')
     st.bar_chart(df_feat_importance)
-    #for ind in df_feat_importance[0:nb_feat].Features:
-     #   st.markdown(ind)
-     #   st.bar_chart(df_feat_importance[df_feat_importance.Features == str(ind)][feat_plot].T,
-     #                width=width,
-     #                height=height)
+    # for ind in df_feat_importance[0:nb_feat].Features:
+    #   st.markdown(ind)
+    #   st.bar_chart(df_feat_importance[df_feat_importance.Features == str(ind)][feat_plot].T,
+    #                width=width,
+    #                height=height)
 
-    #st.markdown('Against the loan :')
-    #for ind in df_feat_importance[-nb_feat:].Features:
+    # st.markdown('Against the loan :')
+    # for ind in df_feat_importance[-nb_feat:].Features:
     #    st.markdown(ind)
     #    st.bar_chart(df_feat_importance[df_feat_importance.Features == ind][feat_plot].T,
     #                 width=width,
@@ -122,18 +120,18 @@ def local_importance(model, df, data_clients_std, id_client, explainer):
 def main():
     df, df_drop, cols, df_to_predict = get_train_test()
     model = get_my_model()
-    id_client = choose_id_client(df)
-    data_clients_std = Calculate_all_score(df, model)
-    data_client = calculate_data_client(id_client, df, data_clients_std)
-    score = calculate_score_id_client(id_client, df, data_client)
+    id_client = choose_id_client(df_to_predict)
+    data_clients_std = Calculate_all_score(df_to_predict, model)
+    data_client = calculate_data_client(id_client, df_to_predict, data_clients_std)
+    score = calculate_score_id_client(id_client, df_to_predict, data_client)
     score_to_score_str(score)
 
     if score != -1:
         df_feat_importance = features_importance_global(model, cols)
-        df_feat_importance = calcul_plot_feat_importance_glob_values(df_feat_importance, df, id_client)
+        df_feat_importance = calcul_plot_feat_importance_glob_values(df_feat_importance, df_to_predict, id_client)
         plot_feat_importance_values(df_feat_importance)
         explainer = get_my_explainer(data_clients_std, cols)
-        local_importance(model, df, data_clients_std, id_client, explainer)
+        local_importance(model, df_to_predict, data_clients_std, id_client, explainer)
 
 
 # if__main__ == main():
