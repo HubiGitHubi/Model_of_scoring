@@ -125,6 +125,9 @@ def main():
     score = calculate_score_id_client(id_client, df_to_predict, data_client)
     score_to_score_str(score)
 
+    df_feat_importance = features_importance_global(model, cols)
+    df_feat_importance = calcul_plot_feat_importance_glob_values(df_feat_importance, df_to_predict, id_client)
+
     if score != -1:
         df_feat_importance = features_importance_global(model, cols)
         df_feat_importance = calcul_plot_feat_importance_glob_values(df_feat_importance, df_to_predict, id_client)
