@@ -85,7 +85,8 @@ def features_importance_global(model, cols):
 
 
 def plot_feat_importance_values(df_feat_importance):
-    st.bar_chart(df_feat_importance.sort_values(by ='feat_importance', ascending=False))
+    df_feat_importance = df_feat_importance.sort_values(by ='feat_importance', ascending=False)
+    st.bar_chart(df_feat_importance)
     # for ind in df_feat_importance[0:nb_feat].Features:
     #   st.markdown(ind)
     #   st.bar_chart(df_feat_importance[df_feat_importance.Features == str(ind)][feat_plot].T,
