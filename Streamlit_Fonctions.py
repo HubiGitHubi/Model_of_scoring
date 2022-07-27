@@ -6,7 +6,7 @@ import streamlit.components.v1 as components
 from sklearn.preprocessing import StandardScaler
 from P7_Scoring.Features_extractions import *
 from P7_Scoring.Model_extraction import get_my_model, get_my_explainer
-
+import altair as alt
 
 def choose_id_client(df_to_predict):
     # Input for the id_client
@@ -85,8 +85,15 @@ def features_importance_global(model, cols):
 
 
 def plot_feat_importance_values(df_feat_importance):
-    df_feat_importance = df_feat_importance.sort_values(by ='feat_importance', ascending=False).reshape(1,-1)
+    df_feat_importance = df_feat_importance.sort_values(by='feat_importance', ascending=False)
     st.bar_chart(df_feat_importance)
+
+    st.write(alt.Chart(df_feat_importance).mark_bar().encode(
+        x=alt.X('Importance', sort=None),
+        y='Feat',
+    ))
+
+
     # for ind in df_feat_importance[0:nb_feat].Features:
     #   st.markdown(ind)
     #   st.bar_chart(df_feat_importance[df_feat_importance.Features == str(ind)][feat_plot].T,
