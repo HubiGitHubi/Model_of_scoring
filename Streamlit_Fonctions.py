@@ -89,7 +89,7 @@ def plot_feat_importance_values(df_feat_importance):
     df_feat_importance = df_feat_importance.reset_index()
     df_feat_importance = df_feat_importance.sort_values(by='feat_importance', ascending=False)
 
-    st.bar_chart(df_feat_importance)
+    st.bar_chart(df_feat_importance[[0, 1]])
 
     #alt.Chart(df_feat_importance).mark_bar().encode(
     #    x=alt.X('Importance', sort=None),
