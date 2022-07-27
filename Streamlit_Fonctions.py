@@ -74,14 +74,14 @@ def features_importance_global(model, cols):
     return df_feat_importance
 
 
-def calcul_plot_feat_importance_glob_values(df_feat_importance, df, id_client):
-    df_feat_importance['mean_clients_accepted'] = [df[col][df.score == 0].mean() for col in df_feat_importance.index]
-    df_feat_importance['mean_clients_refused'] = [df[col][df.score == 1].mean() for col in df_feat_importance.index]
-    df_feat_importance['data_client'] = [float(df[col][df.SK_ID_CURR == id_client].values) for col in
-                                         df_feat_importance.index
-                                         ]
+#def calcul_plot_feat_importance_glob_values(df_feat_importance, df, id_client):
+    #df_feat_importance['mean_clients_accepted'] = [df[col][df.score == 0].mean() for col in df_feat_importance.index]
+    #df_feat_importance['mean_clients_refused'] = [df[col][df.score == 1].mean() for col in df_feat_importance.index]
+    #df_feat_importance['data_client'] = [float(df[col][df.SK_ID_CURR == id_client].values) for col in
+                                       #  df_feat_importance.index
+                                       #  ]
 
-    return df_feat_importance
+    #return df_feat_importance
 
 
 def plot_feat_importance_values(df_feat_importance):
@@ -127,11 +127,11 @@ def main():
     score_to_score_str(score)
 
     df_feat_importance = features_importance_global(model, cols)
-    df_feat_importance = calcul_plot_feat_importance_glob_values(df_feat_importance, df_to_predict, id_client)
-
+    #df_feat_importance = calcul_plot_feat_importance_glob_values(df_feat_importance, df_to_predict, id_client)
+    plot_feat_importance_values(df_feat_importance)
     if score != -1:
         df_feat_importance = features_importance_global(model, cols)
-        df_feat_importance = calcul_plot_feat_importance_glob_values(df_feat_importance, df_to_predict, id_client)
+        #df_feat_importance = calcul_plot_feat_importance_glob_values(df_feat_importance, df_to_predict, id_client)
         plot_feat_importance_values(df_feat_importance)
         explainer = get_my_explainer(data_clients_std, cols)
         local_importance(model, df_to_predict, data_clients_std, id_client, explainer)
