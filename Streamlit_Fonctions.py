@@ -7,8 +7,8 @@ from sklearn.preprocessing import StandardScaler
 from P7_Scoring.Features_extractions import *
 from P7_Scoring.Model_extraction import get_my_model, get_my_explainer
 
-Local URL: http: // localhost: 8501
-Network URL: http: // 192.168.1.27:8501
+#Local URL: http: // localhost: 8501
+#Network URL: http: // 192.168.1.27:8501
 
 
 
@@ -16,12 +16,12 @@ def choose_id_client(df_to_predict):
     # Input for the id_client
     min_id, max_id = df_to_predict.SK_ID_CURR.min(), df_to_predict.SK_ID_CURR.max()
     id_client = st.number_input("Select the id client", min_id, max_id)  # , value=100004)
-    st.markdown("Not in the Database :")
-    st.markdown(100005)
-    st.markdown("accepted :")
-    st.markdown(max_id)
-    st.markdown("refused :")
-    st.markdown(min_id)
+    #st.markdown("Not in the Database :")
+    #st.markdown(100005)
+    #st.markdown("accepted :")
+    #st.markdown(max_id)
+    ##st.markdown("refused :")
+    #st.markdown(min_id)
 
     return id_client
 
@@ -93,7 +93,7 @@ def plot_feat_importance_values(df_feat_importance):
 
     df_feat_importance = df_feat_importance.sort_values(by='feat_importance', ascending=False)
     st.write(df_feat_importance)
-    st.bar_chart(df_feat_importance[[0, 1]])
+    st.bar_chart(df_feat_importance[['feat_importance', 'Features']])
 
     # for ind in df_feat_importance[0:nb_feat].Features:
     #   st.markdown(ind)
