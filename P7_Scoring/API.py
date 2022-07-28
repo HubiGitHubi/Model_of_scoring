@@ -1,13 +1,11 @@
 import json
 import math
-
 import dill
 import numpy as np
+import pandas as pd
 import requests
 import streamlit as st
 from matplotlib import pyplot as plt
-
-from P7_Scoring.Extraction import *
 
 # Local URL: http: // localhost: 8501
 # Network URL: http: // 192.168.1.27:8501
@@ -66,13 +64,13 @@ def get_my_explainer():
 
 
 @st.cache
-def get_train_test() -> object:
+def Import_train_test() -> object:
     # URL of the API + function
     URL = API_URL + "get_train_test_values/"
     # Asks the variable to the API and store it
     response = requests.get(URL)
     # JSON to Python
-    content = json.loads(response.content.decode('utf-8'))
+    content = json.loads(response.content)
     # Transforms in Pandas
     df = pd.DataFrame(content['df'])
     df_drop = pd.DataFrame(content['df_drop'])
@@ -291,7 +289,7 @@ def hist_feats_loc(final_list, nb_feats, df_to_predict):
 
 
 def main():
-    df, df_drop, cols, df_to_predict = get_train_test()
+    df, df_drop, cols, df_to_predict = Import_train_test()
     id_client, yes_no_feat_glob, nb_feats = import_side_bar(df_to_predict)
     model = get_my_model()
     data_clients_std, data_clients_std_train = Import_all_scores(df_to_predict, df_drop, model)
