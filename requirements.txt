@@ -11,3 +11,4 @@ flask
 pandas
 altair~=4.2.0
 matplotlib
+requests

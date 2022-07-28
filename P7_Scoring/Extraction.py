@@ -23,7 +23,7 @@ def get_my_model() -> object:
     return my_model
 
 
-def get_my_explainer(data_clients_std, cols):
+def get_my_explainer():
     # Charge the explainer'
     try:
         with open('C:/Users/33646/Documents/OpenClassroom/Projet 7/Model_of_scoring/Datas/explainer', 'rb') as f:
