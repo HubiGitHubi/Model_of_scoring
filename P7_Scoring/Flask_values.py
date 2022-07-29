@@ -1,5 +1,5 @@
 # import _json
-
+#Affichier uniquement le nbre de glob feat max ou la quantité demandé dans le slider
 import dill
 import numpy as np
 import streamlit as st
