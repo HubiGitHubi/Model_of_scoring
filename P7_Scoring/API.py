@@ -15,21 +15,21 @@ from matplotlib import pyplot as plt
 API_URL = "http://192.168.1.27:8501/"
 
 
-"""@st.cache
-def import_side_bar():
+#@st.cache
+#def import_side_bar():
     # return the setting of the settings page
     # URL of the API + function
-    URL = API_URL + "side_bar_values/"
+#   URL = API_URL + "side_bar_values/"
     # Asks the variable to the API and store it
-    response = requests.get(URL)
+#    response = requests.get(URL)
     # JSON to Python
-    content = json.loads(response.content.decode('utf-8'))
+#   content = json.loads(response.content.decode('utf-8'))
     # Transforms in Pandas
-    id_client = pd.Series(content['SK_ID_CURR'])
-    yes_no_feat_glob = pd.Series(content['yes_no_feat_glob'])
-    nb_feats = pd.Series(content['nb_feats'])
-    return id_client, yes_no_feat_glob, nb_feats
-"""
+#   id_client = pd.Series(content['SK_ID_CURR'])
+#   yes_no_feat_glob = pd.Series(content['yes_no_feat_glob'])
+#   nb_feats = pd.Series(content['nb_feats'])
+#  return id_client, yes_no_feat_glob, nb_feats
+
 @st.cache
 def add_side_bar(df_to_predict):
     # Add the page with settings and store the settings

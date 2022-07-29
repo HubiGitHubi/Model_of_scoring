@@ -16,7 +16,7 @@ Flask_values = Flask(__name__)
 
 
 @Flask_values.route("/")
-def index():
+def root():
     return "Let start loading model and data"
 
 
