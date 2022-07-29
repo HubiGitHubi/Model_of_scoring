@@ -15,7 +15,7 @@ from matplotlib import pyplot as plt
 API_URL = "http://192.168.1.27:8501/"
 
 
-@st.cache
+"""@st.cache
 def import_side_bar():
     # return the setting of the settings page
     # URL of the API + function
@@ -29,7 +29,21 @@ def import_side_bar():
     yes_no_feat_glob = pd.Series(content['yes_no_feat_glob'])
     nb_feats = pd.Series(content['nb_feats'])
     return id_client, yes_no_feat_glob, nb_feats
+"""
+@st.cache
+def add_side_bar(df_to_predict):
+    # Add the page with settings and store the settings
 
+    min_id, max_id = df_to_predict.SK_ID_CURR.min(), df_to_predict.SK_ID_CURR.max()
+    id_client = st.sidebar.number_input("Select the id client", min_id, max_id)
+
+    yes_no_feat_glob = st.sidebar.selectbox(
+        "Do you want the global features importance ? : ",
+        ("Yes", "No"))
+    nb_feats = st.sidebar.slider(
+        "How many local features do you want ?", 2, 15, step=1)
+
+    return id_client,yes_no_feat_glob, nb_feats
 
 @st.cache
 def get_my_model() -> object:
@@ -290,7 +304,7 @@ def hist_feats_loc(final_list, nb_feats, df_to_predict):
 
 def main():
     df, df_drop, cols, df_to_predict = Import_train_test()
-    id_client, yes_no_feat_glob, nb_feats = import_side_bar(df_to_predict)
+    id_client, yes_no_feat_glob, nb_feats = add_side_bar(df_to_predict)
     model = get_my_model()
     data_clients_std, data_clients_std_train = Import_all_scores(df_to_predict, df_drop, model)
     data_client = Import_data_client(id_client, df_to_predict, data_clients_std)
