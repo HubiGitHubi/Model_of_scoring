@@ -145,7 +145,7 @@ def features_importance_global(model, cols):
 
 def plot_feat_importance_values(df_feat_importance):
     # Plot the global features importance
-    df_feat_importance = df_feat_importance.sort_values(by='feat_importance', ascending=False)
+    df_feat_importance = df_feat_importance.sort_values('feat_importance', ascending=False)
     st.write("Global feature importance")
     st.bar_chart(df_feat_importance, height=500)
 
