@@ -4,7 +4,6 @@ import numpy as np
 import streamlit as st
 from matplotlib import pyplot as plt
 from sklearn.preprocessing import StandardScaler
-from P7_Scoring.Extraction import *
 import pickle
 import pandas as pd
 
