@@ -171,7 +171,7 @@ def main():
             plot_feat_importance_values(df_feat_importance)
         proba_client = predict_proba_client(data_client, model)
         plot_proba_client(proba_client)
-        explainer = get_my_explainer(data_clients_std, cols)
+        explainer = get_my_explainer()
         explanation_list = local_importance(model, data_client, explainer, nb_feats)
         final_list = find_loc_feat_importance(explanation_list, df_to_predict)
         hist_feats_loc(final_list, nb_feats, df_to_predict)
