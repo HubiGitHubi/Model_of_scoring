@@ -184,7 +184,7 @@ def find_loc_feat_importance(explanation_list, df_to_predict):
     return final_list
 
 
-def hist_feats_loc(final_list, nb_feats, df_to_predict):
+def hist_feats_loc(final_list, nb_feats, df_to_predict,id_client):
     # Plot the number of chosen local most important feats
 
     _ = math.ceil(math.sqrt(len(final_list)))
@@ -198,6 +198,7 @@ def hist_feats_loc(final_list, nb_feats, df_to_predict):
     for i, _c in enumerate(final_list):
         ax = axs.flat[i]
         ax.hist(df_to_predict[[_c]], bins=20)
+        ax.hist(df_to_predict[df_to_predict["SK_ID_CURR"] == id_client][[_c]])
         ax.set_title(_c)
         fig.set_tight_layout(True)
     st.pyplot(fig)
