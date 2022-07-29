@@ -6,8 +6,9 @@ import streamlit as st
 from flask import jsonify, Flask
 from matplotlib import pyplot as plt
 from sklearn.preprocessing import StandardScaler
+import pandas as pd
+import pickle
 
-from P7_Scoring.Extraction import *
 
 # Local URL: http: // localhost: 8501
 # Network URL: http: // 192.168.1.27:8501
@@ -30,6 +31,7 @@ def add_side_bar(df_to_predict):
     return jsonify({'SK_ID_CURR': id_client,
                     'yes_no_feat_glob': yes_no_feat_glob,
                     'nb_feats': nb_feats})
+
 
 @Flask_values.route("/Import_and_calcul_functions/get_my_model_values")
 def get_my_model() -> object:
