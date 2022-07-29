@@ -15,8 +15,9 @@ import pickle
 Flask_values = Flask(__name__)
 
 
-@Flask_values.route("/Flask_values/side_bar_values")
-
+@Flask_values.route("/")
+def index():
+    return "Let start loading model and data"
 
 
 @Flask_values.route("/Flask_values/get_my_model_values")
