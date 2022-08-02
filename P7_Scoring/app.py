@@ -9,8 +9,8 @@ from P7_Scoring.dashboard import main
 # cd  C:/Users/33646/Documents/OpenClassroom/'Projet 7'/Model_of_scoring
 # streamlit run dashboard.py
 '''
- cd  C:/Users/33646/Documents/OpenClassroom/'Projet 7'/Model_of_scoring/P7_Scoring
-$env:FLASK_APP = "app/get_my_model_values""
+cd  C:/Users/33646/Documents/OpenClassroom/'Projet 7'/Model_of_scoring/P7_Scoring
+$env:FLASK_APP = "app"
 flask run'''
 # Local URL: http: // localhost: 8501
 # Network URL: http: // 192.168.1.27:8501
@@ -32,23 +32,23 @@ def beginning():
     return "Model and data are now loaded"
 
 
-@app.route("/get_my_model_values")
-def get_my_model(model):
-    model_json = st.json.loads(model.to_json())
-    return jsonify({'my_model': model_json})
+#@app.route("/get_my_model_values")
+#def get_my_model():
+#    model_json = st.json.loads(model.to_json())
+ #   return jsonify({'my_model': model_json})
 
 
-@app.route("/app/get_my_explainer_values")
-def get_my_explainer(explainer):
+#@app.route("/app/get_my_explainer_values")
+#def get_my_explainer(explainer):
     # Charge the explainer'
 
-    explainer_json = st.json.loads(explainer.to_json())
+ #   explainer_json = st.json.loads(explainer.to_json())
 
-    return jsonify({'explainer': explainer_json})
+  #  return jsonify({'explainer': explainer_json})
 
 
 @app.route("/app/get_train_test_values")
-def get_train_test(df, df_drop, cols, df_to_predict) -> object:
+def get_train_test() -> object:
     df_json = st.json.loads(df.to_json())
     df_drop_json = st.json.loads(df_drop.to_json())
     cols_json = st.json.loads(cols.to_json())
