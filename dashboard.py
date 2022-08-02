@@ -9,7 +9,7 @@ import P7_Scoring
 
 # main function
 def main():
-    URL = "http://192.168.1.27:8501/app/"
+    #URL = "http://192.168.1.27:8501/app/"
     URL = "http://192.168.1.22:8501/app/"
     # Display the title
     st.title('Loan application scoring dashboard')
@@ -32,7 +32,7 @@ def main():
         return nb_feats
 
     # ___________ List of api Requests functions
-    #@st.cache()
+    #@st.cache
     def get_train_test_dashboard() -> object:
         # URL of the API + get_train_test
         api_url = URL + "get_train_test_values/"
@@ -45,7 +45,7 @@ def main():
         df_to_predict = pd.DataFrame(st.json.loads(response.content['df_to_predict']))
         return df, df_drop, cols, df_to_predict
 
-    @st.cache()
+    @st.cache
     def Calculate_all_data_dashboard():
         # URL of the API + Calculate_all_scores
         api_url = URL + "Calculate_all_scores/"
@@ -57,7 +57,7 @@ def main():
         data_clients_std_train = pd.DataFrame(st.json.loads(response.content['data_clients_std_train']))
         return data_clients_std, data_clients_std_train
 
-    @st.cache()
+    @st.cache
     def calculate_data_client_dashboard():
         # URL of the API + Calculate_all_scores
         api_url = URL + "calculate_data_client_values/"
@@ -67,7 +67,7 @@ def main():
 
         return data_client
 
-    @st.cache()
+    @st.cache
     def calculate_score_id_client_dashboard():
         # URL of the API + Calculate_all_scores
         api_url = URL + "calculate_score_id_client_values/"
@@ -77,7 +77,7 @@ def main():
 
         return score
 
-    @st.cache()
+    @st.cache
     def predict_proba_client_dashboard():
         # URL of the API + Calculate_all_scores
         api_url = URL + "predict_proba_client_values/"
@@ -87,7 +87,7 @@ def main():
 
         return proba_client
 
-    @st.cache()
+    @st.cache
     def features_importance_global_dashboard():
         # URL of the API + Calculate_all_scores
         api_url = URL + "features_importance_global_values/"
@@ -98,7 +98,7 @@ def main():
 
         return df_feat_importance
 
-    @st.cache()
+    @st.cache
     def local_importance_dashboard():
         # URL of the API + Calculate_all_scores
         api_url = URL + "local_importance_values/"
@@ -109,7 +109,7 @@ def main():
 
         return explanation_list, explanation
 
-    @st.cache()
+    @st.cache
     def find_loc_feat_importance_dashboard():
         # URL of the API + Calculate_all_scores
         api_url = URL + "find_loc_feat_importance_values/"

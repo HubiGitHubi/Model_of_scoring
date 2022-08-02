@@ -10,20 +10,24 @@ import seaborn as sns
 
 # Local URL: http: // localhost: 8501
 # Network URL: http: // 192.168.1.27:8501
-
-
-def add_side_bar(df_to_predict):
+def id_client_side_bar():
     # Add the page with settings and store the settings
 
-    min_id, max_id = df_to_predict.SK_ID_CURR.min(), df_to_predict.SK_ID_CURR.max()
-    id_client = st.sidebar.number_input("Select the id client", min_id, max_id)
+    id_client = st.sidebar.number_input("Select the id client", 100001, 456250)
+    return id_client
 
+
+def yes_no_feat_glob_side_bar():
     yes_no_feat_glob = st.sidebar.selectbox(
         "Do you want the global features importance ? : ",
         ("Yes", "No"))
+    return yes_no_feat_glob
+
+
+def nb_feats_side_bar():
     nb_feats = st.sidebar.slider(
-        "How many local features do you want ?", 2, 20, step=1)
-    return id_client, yes_no_feat_glob, nb_feats
+        "How many local features do you want ?", 2, 15, step=1)
+    return nb_feats
 
 
 
