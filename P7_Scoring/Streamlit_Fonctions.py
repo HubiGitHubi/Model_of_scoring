@@ -8,6 +8,7 @@ import pickle
 import pandas as pd
 import seaborn as sns
 
+
 # Local URL: http: // localhost: 8501
 # Network URL: http: // 192.168.1.27:8501
 def id_client_side_bar():
@@ -28,8 +29,6 @@ def nb_feats_side_bar():
     nb_feats = st.sidebar.slider(
         "How many local features do you want ?", 2, 15, step=1)
     return nb_feats
-
-
 
 
 def get_my_model() -> object:
@@ -194,7 +193,7 @@ def find_loc_feat_importance(explanation_list, df_to_predict):
     return final_list
 
 
-def hist_feats_loc(final_list, nb_feats, df_to_predict,id_client):
+def hist_feats_loc(final_list, nb_feats, df_to_predict):
     # Plot the number of chosen local most important feats
 
     _ = math.ceil(math.sqrt(len(final_list)))
@@ -208,11 +207,10 @@ def hist_feats_loc(final_list, nb_feats, df_to_predict,id_client):
     for i, _c in enumerate(final_list):
         ax = axs.flat[i]
         ax.hist(df_to_predict[[_c]], bins=20)
-        #ax.bar(1, df_to_predict[df_to_predict["SK_ID_CURR"] == id_client][[_c]], c='red')
-        #axline((0, 0), (1, 1), linewidth=4, color='r')
         ax.set_title(_c)
         fig.set_tight_layout(True)
     st.pyplot(fig)
+
 
 """
 def main():

@@ -2,6 +2,12 @@
 # Affichier uniquement le nbre de glob feat max ou la quantité demandé dans le slider
 from flask import jsonify, Flask, request
 from Streamlit_Fonctions import *
+
+path = 'C:\Users\33646\Documents\OpenClassroom\Projet 7\Model_of_scoring\Dashboard_file\dashboard.py'
+import sys
+
+sys.path.append(path)
+# Considering your module contains a function called my_func, you could import it:
 from dashboard import *
 
 # cd  C:/Users/33646/Documents/OpenClassroom/'Projet 7'/Model_of_scoring/P7_Scoring
