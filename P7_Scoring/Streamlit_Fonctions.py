@@ -214,7 +214,7 @@ def hist_feats_loc(final_list, nb_feats, df_to_predict,id_client):
         fig.set_tight_layout(True)
     st.pyplot(fig)
 
-
+"""
 def main():
     df, df_drop, cols, df_to_predict = get_train_test()
     id_client, yes_no_feat_glob, nb_feats = add_side_bar(df_to_predict)
@@ -239,3 +239,4 @@ def main():
 
 # if__main__ == main():
 main()
+"""
