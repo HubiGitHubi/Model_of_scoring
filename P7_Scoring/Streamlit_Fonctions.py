@@ -26,6 +26,8 @@ def add_side_bar(df_to_predict):
     return id_client, yes_no_feat_glob, nb_feats
 
 
+
+
 def get_my_model() -> object:
     """
 
@@ -37,10 +39,10 @@ def get_my_model() -> object:
     # return my_model
 
     try:
-        with open('C:/Users/33646/Documents/OpenClassroom/Projet 7/Model_of_scoring/Datas/best_model', 'rb') as f1:
+        with open('/Datas/best_model', 'rb') as f1:
             my_model = pickle.load(f1)
     except:
-        with open('Datas/best_model', 'rb') as f1:
+        with open('../Datas/best_model', 'rb') as f1:
             my_model = pickle.load(f1)
     return my_model
 
@@ -48,26 +50,26 @@ def get_my_model() -> object:
 def get_my_explainer():
     # Charge the explainer'
     try:
-        with open('C:/Users/33646/Documents/OpenClassroom/Projet 7/Model_of_scoring/Datas/explainer', 'rb') as f:
+        with open('/Datas/explainer', 'rb') as f:
             explainer = pickle.load(f, errors="ignore")
     except:
-        with open('Datas/explainer', 'rb') as f:
+        with open('../Datas/explainer', 'rb') as f:
             explainer = pickle.load(f, errors="ignore")
     return explainer
 
 
 def get_train_test() -> object:
     try:
-        path = 'C:/Users/33646/Documents/OpenClassroom/Projet 7/Model_of_scoring/Datas/data_clients.csv'
+        path = '/Datas/data_clients.csv'
         df = pd.read_csv(path)
     except:
-        path = 'Datas/data_clients.csv'
+        path = '../Datas/data_clients.csv'
         df = pd.read_csv(path)
     try:
-        path = 'C:/Users/33646/Documents/OpenClassroom/Projet 7/Model_of_scoring/Datas/data_clients_to_predict.csv'
+        path = '/Datas/data_clients_to_predict.csv'
         df_to_predict = pd.read_csv(path)
     except:
-        path = 'Datas/data_clients_to_predict.csv'
+        path = '../Datas/data_clients_to_predict.csv'
         df_to_predict = pd.read_csv(path)
 
     df_drop = df.drop(['SK_ID_CURR', 'TARGET'], axis=1)
@@ -155,7 +157,7 @@ def plot_feat_importance_values(df_feat_importance):
 
 
 def local_importance(model, data_client, explainer, nb_feats):
-    with open('explainer', 'wb') as f:
+    with open('../explainer', 'wb') as f:
         dill.dump(explainer, f)
     explanation = explainer.explain_instance(data_client.values.reshape(-1),
                                              model.predict_proba,

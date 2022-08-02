@@ -1,17 +1,15 @@
 # import _json
 #Affichier uniquement le nbre de glob feat max ou la quantité demandé dans le slider
-import dill
-import numpy as np
-import streamlit as st
 from flask import jsonify, Flask, request
-from matplotlib import pyplot as plt
-from sklearn.preprocessing import StandardScaler
-import pandas as pd
-import pickle
-from Streamlit_Fonctions import *
+from P7_Scoring.Streamlit_Fonctions import *
+
+cd  C:/Users/33646/Documents/OpenClassroom/'Projet 7'/Model_of_scoring/P7_Scoring
+streamlit run app.py
 
 # Local URL: http: // localhost: 8501
 # Network URL: http: // 192.168.1.27:8501
+#http://192.168.1.22:8501
+
 
 # Import data, model, explainer
 df, df_drop, cols, df_to_predict = get_train_test()
