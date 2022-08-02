@@ -205,11 +205,7 @@ def hist_feats_loc(final_list, nb_feats, df_to_predict,id_client):
 
 
 def main():
-    df, df_drop, cols, df_to_predict = get_train_test()
     id_client, yes_no_feat_glob, nb_feats = add_side_bar(df_to_predict)
-    model = get_my_model()
-    data_clients_std, data_clients_std_train = Calculate_all_scores(df_to_predict, df_drop, model)
-    data_client = calculate_data_client(id_client, df_to_predict, data_clients_std)
     score = calculate_score_id_client(id_client, df_to_predict, data_client)
     score_to_score_str(score)
     df_feat_importance = features_importance_global(model, cols)

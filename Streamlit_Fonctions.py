@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 from sklearn.preprocessing import StandardScaler
 import pickle
 import pandas as pd
-
+import seaborn as sns
 
 # Local URL: http: // localhost: 8501
 # Network URL: http: // 192.168.1.27:8501
@@ -22,7 +22,7 @@ def add_side_bar(df_to_predict):
         "Do you want the global features importance ? : ",
         ("Yes", "No"))
     nb_feats = st.sidebar.slider(
-        "How many local features do you want ?", 2, 15, step=1)
+        "How many local features do you want ?", 2, 20, step=1)
     return id_client, yes_no_feat_glob, nb_feats
 
 
@@ -146,8 +146,12 @@ def features_importance_global(model, cols):
 def plot_feat_importance_values(df_feat_importance):
     # Plot the global features importance
     df_feat_importance = df_feat_importance.sort_values('feat_importance', ascending=False)
+    print(df_feat_importance)
     st.write("Global feature importance")
     st.bar_chart(df_feat_importance, height=500)
+    fig = plt.figure(figsize=(15, 25))
+    sns.barplot(data=df_feat_importance.reset_index(), x="feat_importance", y='Features')
+    st.write(fig)
 
 
 def local_importance(model, data_client, explainer, nb_feats):
@@ -199,7 +203,7 @@ def hist_feats_loc(final_list, nb_feats, df_to_predict,id_client):
         ax = axs.flat[i]
         ax.hist(df_to_predict[[_c]], bins=20)
         #ax.bar(1, df_to_predict[df_to_predict["SK_ID_CURR"] == id_client][[_c]], c='red')
-
+        #axline((0, 0), (1, 1), linewidth=4, color='r')
         ax.set_title(_c)
         fig.set_tight_layout(True)
     st.pyplot(fig)
