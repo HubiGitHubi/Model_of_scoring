@@ -33,7 +33,7 @@ def main():
         return nb_feats
 
     # ___________ List of api Requests functions
-    #@st.cache
+    @st.cache
     def get_train_test_dashboard() -> object:
         # URL of the API + get_train_test
         api_url = URL + "get_train_test_values"
