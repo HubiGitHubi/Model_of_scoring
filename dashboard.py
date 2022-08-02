@@ -5,26 +5,31 @@ import pandas as pd
 import streamlit as st
 import seaborn as sns
 import matplotlib.pyplot as plt
-
+import P7_Scoring
 
 # main function
 def main():
-    URL = "http: // 192.168.1.27:8501/app"
+    URL = "http://192.168.1.27:8501/app"
 
     # Display the title
     st.title('Loan application scoring dashboard')
 
-    def add_side_bar():
+    def id_client_side_bar():
         # Add the page with settings and store the settings
 
         id_client = st.sidebar.number_input("Select the id client", 100001, 456250)
+        return id_client
 
+    def yes_no_feat_glob_side_bar():
         yes_no_feat_glob = st.sidebar.selectbox(
             "Do you want the global features importance ? : ",
             ("Yes", "No"))
+        return yes_no_feat_glob
+
+    def nb_feats_side_bar():
         nb_feats = st.sidebar.slider(
             "How many local features do you want ?", 2, 15, step=1)
-        return id_client, yes_no_feat_glob, nb_feats
+        return nb_feats
 
     # ___________ List of api Requests functions
     @st.cache()
@@ -135,7 +140,6 @@ def main():
     def plot_feat_importance_values():
         # Plot the global features importance
         st.write("Global feature importance")
-        st.bar_chart(df_feat_importance, height=500)
         fig = plt.figure(figsize=(15, 25))
         sns.barplot(data=df_feat_importance.reset_index(), x="feat_importance", y='Features')
         st.write(fig)
@@ -163,13 +167,16 @@ def main():
         st.pyplot(fig)
 
     # Main program
-    id_client, yes_no_feat_glob, nb_feats = add_side_bar()
+    id_client = id_client_side_bar()
+    yes_no_feat_glob = yes_no_feat_glob_side_bar()
+    nb_feats = nb_feats_side_bar()
     df, df_drop, cols, df_to_predict = get_train_test_dashboard()
     data_clients_std, data_clients_std_train = Calculate_all_data_dashboard()
     data_client = calculate_data_client_dashboard()
     score = calculate_score_id_client_dashboard()
     proba_client = predict_proba_client_dashboard()
-    df_feat_importance = features_importance_global_dashboard()
+    if yes_no_feat_glob == 1:
+        df_feat_importance = features_importance_global_dashboard()
     explanation_list, explanation = local_importance_dashboard()
     final_list = find_loc_feat_importance_dashboard()
     score_to_score_str(score)

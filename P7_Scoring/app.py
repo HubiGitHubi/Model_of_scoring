@@ -1,14 +1,16 @@
 # import _json
-#Affichier uniquement le nbre de glob feat max ou la quantité demandé dans le slider
+# Affichier uniquement le nbre de glob feat max ou la quantité demandé dans le slider
 from flask import jsonify, Flask, request
-from P7_Scoring.Streamlit_Fonctions import *
+from Streamlit_Fonctions import *
 
-cd  C:/Users/33646/Documents/OpenClassroom/'Projet 7'/Model_of_scoring/P7_Scoring
-streamlit run app.py
+# cd  C:/Users/33646/Documents/OpenClassroom/'Projet 7'/Model_of_scoring/P7_Scoring
+# streamlit run app.py
+# cd  C:/Users/33646/Documents/OpenClassroom/'Projet 7'/Model_of_scoring
+# streamlit run dashboard.py
 
 # Local URL: http: // localhost: 8501
 # Network URL: http: // 192.168.1.27:8501
-#http://192.168.1.22:8501
+# http://192.168.1.22:8501
 
 
 # Import data, model, explainer
@@ -19,6 +21,7 @@ df_feat_importance = features_importance_global(model, cols)
 explainer = get_my_explainer()
 
 app = Flask(__name__)
+
 
 @app.route("/")
 def beginning():
@@ -41,7 +44,7 @@ def get_my_explainer(explainer):
 
 
 @app.route("/app/get_train_test_values")
-def get_train_test(df,df_drop,cols,df_to_predict) -> object:
+def get_train_test(df, df_drop, cols, df_to_predict) -> object:
     df_json = st.json.loads(df.to_json())
     df_drop_json = st.json.loads(df_drop.to_json())
     cols_json = st.json.loads(cols.to_json())
@@ -111,7 +114,7 @@ def local_importance(model, data_client, explainer, nb_feats):
     explanation_list_json = st.json.loads(explanation_list.to_json())
     explanation_json = st.json.loads(explanation_list.to_json())
     return jsonify({'explanation_list': explanation_list_json,
-                   'Explanation': explanation_json})
+                    'Explanation': explanation_json})
 
 
 @app.route("/app/find_loc_feat_importance_values")
