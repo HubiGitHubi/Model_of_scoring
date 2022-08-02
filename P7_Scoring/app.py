@@ -3,7 +3,7 @@
 from flask import jsonify, Flask, request
 from Streamlit_Fonctions import *
 
-path = 'C:\Users\33646\Documents\OpenClassroom\Projet 7\Model_of_scoring\Dashboard_file\dashboard.py'
+path = 'C:/Users/33646/Documents/OpenClassroom/Projet 7/Model_of_scoring/Dashboard_file/dashboard.py'
 import sys
 
 sys.path.append(path)
