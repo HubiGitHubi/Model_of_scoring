@@ -64,12 +64,13 @@ def get_train_test() -> object:
 def Calculate_all_scores(data_clients_std, data_clients_std_train):
     data_clients_std_json = st.json.loads(data_clients_std.to_json())
     data_clients_std_train_json = st.json.loads(data_clients_std_train.to_json())
-    return jsonify({'data_clients_std': data_clients_std_json,
+    return jsonify({'status': 'ok',
+                    'data_clients_std': data_clients_std_json,
                     'data_clients_std_train': data_clients_std_train_json})
 
 
 @app.route("/app/calculate_data_client_values")
-def calculate_data_client(df_to_predict, data_clients_std):
+def calculate_data_client():
     # Return the data of the chosen client
     id_client = int(request.args.get('SK_ID_CURR'))
     data_client = data_clients_std[df_to_predict.SK_ID_CURR == id_client]
