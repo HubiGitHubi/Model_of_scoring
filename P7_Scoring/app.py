@@ -1,20 +1,17 @@
 # import _json
 # Affichier uniquement le nbre de glob feat max ou la quantité demandé dans le slider
 from flask import jsonify, Flask, request
-from Streamlit_Fonctions import *
-
-path = 'C:/Users/33646/Documents/OpenClassroom/Projet 7/Model_of_scoring/Dashboard_file/dashboard.py'
-import sys
-
-sys.path.append(path)
-# Considering your module contains a function called my_func, you could import it:
-from dashboard import *
+from P7_Scoring.Streamlit_Fonctions import *
+from P7_Scoring.dashboard import main
 
 # cd  C:/Users/33646/Documents/OpenClassroom/'Projet 7'/Model_of_scoring/P7_Scoring
 # streamlit run app.py
 # cd  C:/Users/33646/Documents/OpenClassroom/'Projet 7'/Model_of_scoring
 # streamlit run dashboard.py
-
+'''
+ cd  C:/Users/33646/Documents/OpenClassroom/'Projet 7'/Model_of_scoring/P7_Scoring
+$env:FLASK_APP = "app/get_my_model_values""
+flask run'''
 # Local URL: http: // localhost: 8501
 # Network URL: http: // 192.168.1.27:8501
 # http://192.168.1.22:8501
@@ -35,10 +32,10 @@ def beginning():
     return "Model and data are now loaded"
 
 
-@app.route("/app/get_my_model_values")
-def get_my_model(my_model):
-    my_model_json = st.json.loads(my_model.to_json())
-    return jsonify({'my_model': my_model_json})
+@app.route("/get_my_model_values")
+def get_my_model(model):
+    model_json = st.json.loads(model.to_json())
+    return jsonify({'my_model': model_json})
 
 
 @app.route("/app/get_my_explainer_values")
@@ -148,5 +145,5 @@ def find_loc_feat_importance(explanation_list, df_to_predict):
     return jsonify({'final_list': final_list_json})
 
 
-if __name__ == "__main__":
+if __name__ == main:
     app.run()
