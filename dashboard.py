@@ -9,7 +9,7 @@ import P7_Scoring
 
 # main function
 def main():
-    URL = "http://192.168.1.27:8501/app"
+    URL = "http://192.168.1.22:8501/app"
 
     # Display the title
     st.title('Loan application scoring dashboard')
