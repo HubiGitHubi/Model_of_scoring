@@ -62,13 +62,12 @@ def get_my_explainer():
 
 
 def get_train_test() -> object:
-    try:
-        path = 'Model_of_scoring/Datas/data_clients.csv'
-        df = pd.read_csv(path)
-    except:
-        path = 'https://github.com/HubiGitHubi/Model_of_scoring/blob/001e2834944a6b83610d1a0e0dd6d06f3f50e89c/Datas' \
-               '/data_clients.csv '
-        df = pd.read_csv(path)
+    #try:
+    path = 'Model_of_scoring/Datas/data_clients.csv'
+    df = pd.read_csv(path)
+    #except:
+        #path = 'C:/Users/33646/Documents/OpenClassroom/Projet 7/Model_of_scoring/Datas/data_clients.csv'
+       # df = pd.read_csv(path)
     try:
         path = '/Datas/data_clients_to_predict.csv'
         df_to_predict = pd.read_csv(path)
