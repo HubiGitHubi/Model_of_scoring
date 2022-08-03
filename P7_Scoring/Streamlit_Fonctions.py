@@ -168,9 +168,8 @@ def plot_feat_importance_values(df_feat_importance):
                                                                                ascending=False).reset_index()[0:15]
     st.write("df_feat_importance_abs")
     st.write(df_feat_importance_abs['Features'])
-    sns.barplot(
-        data=df_feat_importance.reset_index()[df_feat_importance.Features == df_feat_importance_abs['Features']],
-        x="feat_importance", y='Features')
+    df_plot = df_feat_importance.reset_index()[df_feat_importance.reset_index()['Features'] == df_feat_importance_abs['Features']]
+    sns.barplot(data= df_plot,  x="feat_importance", y='Features')
     st.write(fig)
 
 
