@@ -41,7 +41,7 @@ def main():
 
         # Requesting the API and saving the response
         response = requests.get(api_url)
-        content = json.loads(response.content.decode('utf-8'))
+        content = json.loads(response.content)
         st.write(content)
         df = pd.DataFrame(content['df'])
         df_drop = pd.DataFrame(json.loads(response.content['df_drop']))
