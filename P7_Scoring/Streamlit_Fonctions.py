@@ -163,8 +163,7 @@ def plot_feat_importance_values(df_feat_importance):
     # Plot the global features importance
     st.write("Global feature importance")
     fig = plt.figure(figsize=(15, 25))
-    #st.write(df_feat_importance.reset_index())
-    df_feat_importance_abs = abs(df_feat_importance).reset_index().sort_values(by='Features', ascending=False)[15].index
+    df_feat_importance_abs = abs(df_feat_importance).reset_index().sort_values(by='Features', ascending=False)#[0:15].index
     st.write(df_feat_importance_abs)
     st.write(df_feat_importance[df_feat_importance_abs.reset_index()].reset_index())
     sns.barplot(data=df_feat_importance[df_feat_importance_abs].reset_index(), x="feat_importance", y='Features')
