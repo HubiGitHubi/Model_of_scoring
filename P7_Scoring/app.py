@@ -8,12 +8,7 @@ import pickle
 import pandas as pd
 
 from flask import jsonify, Flask, request
-# from Streamlit_Fonctions import *
 
-# cd  C:/Users/33646/Documents/OpenClassroom/'Projet 7'/Model_of_scoring/P7_Scoring
-# streamlit run app.py
-# cd  C:/Users/33646/Documents/OpenClassroom/'Projet 7'/Model_of_scoring
-# streamlit run dashboard.py
 '''
 cd  C:/Users/33646/Documents/OpenClassroom/'Projet 7'/Model_of_scoring/P7_Scoring
 $env:FLASK_APP = "app"
@@ -21,7 +16,6 @@ flask run'''
 
 
 # Network URL: http: // 192.168.1.27:8501
-
 
 def get_my_model() -> object:
     """
