@@ -1,8 +1,8 @@
 # import _json
 # Affichier uniquement le nbre de glob feat max ou la quantité demandé dans le slider
 from flask import jsonify, Flask, request
-from P7_Scoring.Streamlit_Fonctions import *
-from P7_Scoring.dashboard import main
+from Streamlit_Fonctions import *
+from dashboard import main
 
 # cd  C:/Users/33646/Documents/OpenClassroom/'Projet 7'/Model_of_scoring/P7_Scoring
 # streamlit run app.py
