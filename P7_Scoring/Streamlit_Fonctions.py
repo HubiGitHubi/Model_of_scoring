@@ -62,18 +62,18 @@ def get_my_explainer():
 
 
 def get_train_test() -> object:
-    #try:
+    # try:
     path = 'Datas/data_clients.csv'
     df = pd.read_csv(path)
-    #except:
-        #path = 'C:/Users/33646/Documents/OpenClassroom/Projet 7/Model_of_scoring/Datas/data_clients.csv'
-       # df = pd.read_csv(path)
-    #try:
+    # except:
+    # path = 'C:/Users/33646/Documents/OpenClassroom/Projet 7/Model_of_scoring/Datas/data_clients.csv'
+    # df = pd.read_csv(path)
+    # try:
     path = 'Datas/data_clients_to_predict.csv'
     df_to_predict = pd.read_csv(path)
-    #except:
-     #   path = 'C:/Users/33646/Documents/OpenClassroom/Projet 7/Model_of_scoring/Datas/data_clients_to_predict.csv'
-     #   df_to_predict = pd.read_csv(path)
+    # except:
+    #   path = 'C:/Users/33646/Documents/OpenClassroom/Projet 7/Model_of_scoring/Datas/data_clients_to_predict.csv'
+    #   df_to_predict = pd.read_csv(path)
 
     df_drop = df.drop(['SK_ID_CURR', 'TARGET'], axis=1)
     cols = pd.DataFrame(df_drop.columns, columns=['Features'])
@@ -212,10 +212,11 @@ def hist_feats_loc(final_list, nb_feats, df_to_predict):
     st.pyplot(fig)
 
 
-"""
 def main():
     df, df_drop, cols, df_to_predict = get_train_test()
-    id_client, yes_no_feat_glob, nb_feats = add_side_bar(df_to_predict)
+    id_client = id_client_side_bar()
+    yes_no_feat_glob = yes_no_feat_glob_side_bar()
+    nb_feats = nb_feats_side_bar()
     model = get_my_model()
     data_clients_std, data_clients_std_train = Calculate_all_scores(df_to_predict, df_drop, model)
     data_client = calculate_data_client(id_client, df_to_predict, data_clients_std)
@@ -232,9 +233,8 @@ def main():
         explainer = get_my_explainer()
         explanation_list = local_importance(model, data_client, explainer, nb_feats)
         final_list = find_loc_feat_importance(explanation_list, df_to_predict)
-        hist_feats_loc(final_list, nb_feats, df_to_predict,id_client)
+        hist_feats_loc(final_list, nb_feats, df_to_predict)
 
 
 # if__main__ == main():
 main()
-"""
