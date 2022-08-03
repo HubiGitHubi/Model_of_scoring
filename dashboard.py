@@ -1,3 +1,4 @@
+import json
 import math
 
 import requests
@@ -40,10 +41,10 @@ def main():
 
         # Requesting the API and saving the response
         response = requests.get(api_url)
-        df = pd.DataFrame(st.json.loads(response.content['df']))
+        df = pd.DataFrame(json.loads(response.content['df']))
         df_drop = pd.DataFrame(st.json.loads(response.content['df_drop']))
-        cols = pd.Series(st.json.loads(response.content['cols']))
-        df_to_predict = pd.DataFrame(st.json.loads(response.content['df_to_predict']))
+        cols = pd.Series(json.loads(response.content['cols']))
+        df_to_predict = pd.DataFrame(json.loads(response.content['df_to_predict']))
         return df, df_drop, cols, df_to_predict
 
     @st.cache
