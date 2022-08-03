@@ -139,7 +139,7 @@ def main():
         st.write("Default rate")
         st.error(round(proba_client[0][1], 2))
 
-    def plot_feat_importance_values():
+    def plot_feat_importance_values(df_feat_importance):
         # Plot the global features importance
         st.write("Global feature importance")
         fig = plt.figure(figsize=(15, 25))
@@ -150,7 +150,7 @@ def main():
         with plt.style.context("ggplot"):
             st.pyplot(explanation.as_pyplot_figure())
 
-    def hist_feats_loc(final_list, nb_feats, df_to_predict, id_client):
+    def hist_feats_loc(final_list, nb_feats, df_to_predict):
         # Plot the number of chosen local most important feats
 
         _ = math.ceil(math.sqrt(len(final_list)))
@@ -179,13 +179,14 @@ def main():
     proba_client = predict_proba_client_dashboard()
     if yes_no_feat_glob == 1:
         df_feat_importance = features_importance_global_dashboard()
+        plot_feat_importance_values(df_feat_importance)
     explanation_list, explanation = local_importance_dashboard()
     final_list = find_loc_feat_importance_dashboard()
     score_to_score_str(score)
     plot_proba_client(proba_client)
     local_importance(explanation)
-    plot_feat_importance_values(df_feat_importance)
-    hist_feats_loc(final_list, nb_feats, df_to_predict, id_client)
+
+    hist_feats_loc(final_list, nb_feats, df_to_predict)
 
 
 if __name__ == "__main__":
