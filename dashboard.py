@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 def main():
     # URL = "http://192.168.1.27:8501/app/"
     # URL = "http://127.0.0.1:5000/app/"
-    URL = "http://127.0.0.1:5000/app/"
+    URL = "https://implementezunmodele.herokuapp.com//app/"
     # Display the title
     st.title('Loan application scoring dashboard')
 
