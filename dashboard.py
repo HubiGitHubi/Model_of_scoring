@@ -42,7 +42,7 @@ def main():
         # Requesting the API and saving the response
         response = requests.get(api_url)
         df = pd.DataFrame(json.loads(response.content['df']))
-        df_drop = pd.DataFrame(st.json.loads(response.content['df_drop']))
+        df_drop = pd.DataFrame(json.loads(response.content['df_drop']))
         cols = pd.Series(json.loads(response.content['cols']))
         df_to_predict = pd.DataFrame(json.loads(response.content['df_to_predict']))
         return df, df_drop, cols, df_to_predict
@@ -55,8 +55,8 @@ def main():
         # Requesting the API and saving the response
         response = requests.get(api_url)
 
-        data_clients_std = pd.DataFrame(st.json.loads(response.content['data_clients']))
-        data_clients_std_train = pd.DataFrame(st.json.loads(response.content['data_clients_std_train']))
+        data_clients_std = pd.DataFrame(json.loads(response.content['data_clients']))
+        data_clients_std_train = pd.DataFrame(json.loads(response.content['data_clients_std_train']))
         return data_clients_std, data_clients_std_train
 
     @st.cache
@@ -65,7 +65,7 @@ def main():
         api_url = URL + "calculate_data_client_values/"
         # Requesting the API and saving the response
         response = requests.get(api_url)
-        data_client = pd.DataFrame(st.json.loads(response.content['data_client']))
+        data_client = pd.DataFrame(json.loads(response.content['data_client']))
 
         return data_client
 
@@ -75,7 +75,7 @@ def main():
         api_url = URL + "calculate_score_id_client_values/"
         # Requesting the API and saving the response
         response = requests.get(api_url)
-        score = int(st.json.loads(response.content['score']))
+        score = int(json.loads(response.content['score']))
 
         return score
 
@@ -85,7 +85,7 @@ def main():
         api_url = URL + "predict_proba_client_values/"
         # Requesting the API and saving the response
         response = requests.get(api_url)
-        proba_client = pd.Series(st.json.loads(response.content['proba_client']))
+        proba_client = pd.Series(json.loads(response.content['proba_client']))
 
         return proba_client
 
@@ -95,7 +95,7 @@ def main():
         api_url = URL + "features_importance_global_values/"
         # Requesting the API and saving the response
         response = requests.get(api_url)
-        df_feat_importance = pd.DataFrame(st.json.loads(response.content['df_feat_importance']))
+        df_feat_importance = pd.DataFrame(json.loads(response.content['df_feat_importance']))
         df_feat_importance = df_feat_importance.sort_values('feat_importance', ascending=False)
 
         return df_feat_importance
@@ -106,8 +106,8 @@ def main():
         api_url = URL + "local_importance_values/"
         # Requesting the API and saving the response
         response = requests.get(api_url)
-        explanation_list = pd.Series(st.json.loads(response.content['explanation_list']))
-        explanation = pd.DataFrame(st.json.loads(response.content['explanation']))
+        explanation_list = pd.Series(json.loads(response.content['explanation_list']))
+        explanation = pd.DataFrame(json.loads(response.content['explanation']))
 
         return explanation_list, explanation
 
@@ -117,7 +117,7 @@ def main():
         api_url = URL + "find_loc_feat_importance_values/"
         # Requesting the API and saving the response
         response = requests.get(api_url)
-        final_list = pd.Series(st.json.loads(response.content['final_list']))
+        final_list = pd.Series(json.loads(response.content['final_list']))
 
         return final_list
 
