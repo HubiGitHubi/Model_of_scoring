@@ -151,22 +151,10 @@ def features_importance_global(model, cols):
     return df_plot
 
 
-def plot_feat_importance_values2(df_feat_importance):
-    # Plot the global features importance
-    df_feat_importance = df_feat_importance.sort_values('feat_importance', ascending=False)
-    st.write("Global feature importance")
-    fig = plt.figure(figsize=(15, 25))
-    sns.barplot(data=df_feat_importance.reset_index().sort_values(by='feat_importance', ascending=False),
-                x="feat_importance", y='Features')
-    st.write(fig)
-
-
 def plot_feat_importance_values(df_plot):
     # Plot the global features importance
     st.write("Global feature importance")
     fig = plt.figure(figsize=(15, 25))
-
-    st.write(df_plot)
 
     sns.barplot(data=df_plot, x="feat_importance", y='Features')
     st.write(fig)
