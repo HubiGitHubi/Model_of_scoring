@@ -134,7 +134,7 @@ def score_to_score_str(score: int):
 
 # noinspection PyProtectedMember
 def features_importance_global(model, cols):
-    # Caluclate the global features importance
+    # Calculate the global features importance and filter only the 15 most important (positive or negative)
     try:
         feat_importance = pd.DataFrame(np.array(model.best_estimator_._final_estimator.feature_importances_[0]),
                                        columns=["feat_importance"])
@@ -145,7 +145,7 @@ def features_importance_global(model, cols):
     df_feat_importance = pd.concat([feat_importance, cols], axis=1).sort_values(by='feat_importance', ascending=False)
     df_feat_importance = df_feat_importance.set_index('Features')
     df_feat_importance['abs'] = abs(df_feat_importance['feat_importance'])
-    df_feat_importance = df_feat_importance.sort_values(by='feat_importance', ascending=False).reset_index()[0:15]
+    df_feat_importance = df_feat_importance.sort_values(by='abs', ascending=False).reset_index()[0:15]
     df_plot = df_feat_importance.loc[0:15, ['Features', 'feat_importance']]
 
     return df_feat_importance
