@@ -145,7 +145,8 @@ def main():
         # Plot the global features importance
         st.write("Global feature importance")
         fig = plt.figure(figsize=(15, 25))
-        sns.barplot(data=df_feat_importance.reset_index(), x="feat_importance", y='Features')
+        df_feat_importance_abs = abs(df_feat_importance).sort_values(ascendinf=False)[15]
+        sns.barplot(data=df_feat_importance_abs.reset_index(), x="feat_importance", y='Features')
         st.write(fig)
 
     def local_importance(explanation):
