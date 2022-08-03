@@ -166,7 +166,7 @@ def beginning():
 
 # @app.route("/get_my_model_values")
 # def get_my_model():
-#    model_json = st.json.loads(model.to_json())
+#    model_json = json.loads(model.to_json())
 #   return jsonify({'my_model': model_json})
 
 
@@ -174,17 +174,17 @@ def beginning():
 # def get_my_explainer(explainer):
 # Charge the explainer'
 
-#   explainer_json = st.json.loads(explainer.to_json())
+#   explainer_json = json.loads(explainer.to_json())
 
 #  return jsonify({'explainer': explainer_json})
 
 
 @app.route('/app/get_train_test_values')
 def get_train_test() -> object:
-    df_json = st.json.loads(df.to_json())
-    df_drop_json = st.json.loads(df_drop.to_json())
-    cols_json = st.json.loads(cols.to_json())
-    df_to_predict_json = st.json.loads(df_to_predict.to_json())
+    df_json = json.loads(df.to_json())
+    df_drop_json = json.loads(df_drop.to_json())
+    cols_json = json.loads(cols.to_json())
+    df_to_predict_json = json.loads(df_to_predict.to_json())
 
     return jsonify({'df': df_json,
                     'df_drop': df_drop_json,
@@ -194,8 +194,8 @@ def get_train_test() -> object:
 
 @app.route('/app/Calculate_all_scores_values')
 def Calculate_all_scores(data_clients_std, data_clients_std_train):
-    data_clients_std_json = st.json.loads(data_clients_std.to_json())
-    data_clients_std_train_json = st.json.loads(data_clients_std_train.to_json())
+    data_clients_std_json = json.loads(data_clients_std.to_json())
+    data_clients_std_train_json = json.loads(data_clients_std_train.to_json())
     return jsonify({'status': 'ok',
                     'data_clients_std': data_clients_std_json,
                     'data_clients_std_train': data_clients_std_train_json})
@@ -206,7 +206,7 @@ def calculate_data_client():
     # Return the data of the chosen client
     id_client = int(request.args.get('SK_ID_CURR'))
     data_client = data_clients_std[df_to_predict.SK_ID_CURR == id_client]
-    data_client_json = st.json.loads(data_client.to_json())
+    data_client_json = json.loads(data_client.to_json())
 
     return jsonify({'data_client': data_client_json})
 
@@ -220,7 +220,7 @@ def calculate_score_id_client(df_to_predict, data_client):
         score = int(df_to_predict.score[df_to_predict.SK_ID_CURR == id_client])
     else:
         score = -1
-    score_json = st.json.loads(score.to_json())
+    score_json = json.loads(score.to_json())
 
     return jsonify({'score': score_json})
 
@@ -229,7 +229,7 @@ def calculate_score_id_client(df_to_predict, data_client):
 def predict_proba_client(data_client, model):
     # Return proba of success/failure of a client
     proba_client = model.predict_proba(data_client)
-    proba_client_json = st.json.loads(proba_client.to_json())
+    proba_client_json = json.loads(proba_client.to_json())
 
     return jsonify({'proba_client': proba_client_json})
 
@@ -237,7 +237,7 @@ def predict_proba_client(data_client, model):
 @app.route('/app/features_importance_global_values')
 def features_importance_global(df_feat_importance):
     # Calculate the global features importance
-    df_feat_importance_json = st.json.loads(df_feat_importance.to_json())
+    df_feat_importance_json = json.loads(df_feat_importance.to_json())
 
     return jsonify({'df_feat_importance': df_feat_importance_json})
 
@@ -248,8 +248,8 @@ def local_importance(model, data_client, explainer, nb_feats):
                                              model.predict_proba,
                                              num_features=nb_feats)
     explanation_list = explanation.as_list()
-    explanation_list_json = st.json.loads(explanation_list.to_json())
-    explanation_json = st.json.loads(explanation_list.to_json())
+    explanation_list_json = json.loads(explanation_list.to_json())
+    explanation_json = json.loads(explanation_list.to_json())
     return jsonify({'explanation_list': explanation_list_json,
                     'Explanation': explanation_json})
 
@@ -273,7 +273,7 @@ def find_loc_feat_importance(explanation_list, df_to_predict):
             final_list.append(i)
         except:
             a = 1
-    final_list_json = st.json.loads(final_list.to_json())
+    final_list_json = json.loads(final_list.to_json())
 
     return jsonify({'final_list': final_list_json})
 
