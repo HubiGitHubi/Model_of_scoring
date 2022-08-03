@@ -42,7 +42,7 @@ def get_my_model() -> object:
     # return my_model
 
     try:
-        with open('/Datas/best_model', 'rb') as f1:
+        with open('Datas/best_model', 'rb') as f1:
             my_model = pickle.load(f1)
     except:
         with open('../Datas/best_model', 'rb') as f1:
@@ -53,7 +53,7 @@ def get_my_model() -> object:
 def get_my_explainer():
     # Charge the explainer'
     try:
-        with open('/Datas/explainer', 'rb') as f:
+        with open('Datas/explainer', 'rb') as f:
             explainer = pickle.load(f, errors="ignore")
     except:
         with open('../Datas/explainer', 'rb') as f:
