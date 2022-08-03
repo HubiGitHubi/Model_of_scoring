@@ -147,7 +147,7 @@ def features_importance_global(model, cols):
     df_feat_importance_abs = abs(df_feat_importance).sort_values(by='feat_importance',
                                                                                ascending=False).reset_index()[0:15]
     st.write("df_feat_importance_abs")
-    st.write(df_feat_importance_abs['Features'].values)
+    st.write(df_feat_importance_abs['Features'].drop_index().values)
 
 
     df_plot = df_feat_importance.reset_index()[df_feat_importance_abs['Features'].values]
