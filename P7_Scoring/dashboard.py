@@ -36,7 +36,7 @@ def main():
     @st.cache
     def get_train_test_dashboard() -> object:
         # URL of the API + get_train_test
-        api_url = URL + "get_train_test_values"
+        api_url = URL + "get_train_test_values/"
 
         # Requesting the API and saving the response
         response = requests.get(api_url)
