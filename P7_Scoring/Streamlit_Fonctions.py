@@ -148,7 +148,7 @@ def features_importance_global(model, cols):
     df_feat_importance = df_feat_importance.sort_values(by='abs', ascending=False).reset_index()[0:15]
     df_plot = df_feat_importance.loc[0:15, ['Features', 'feat_importance']]
 
-    return df_feat_importance
+    return df_plot
 
 
 def plot_feat_importance_values2(df_feat_importance):
