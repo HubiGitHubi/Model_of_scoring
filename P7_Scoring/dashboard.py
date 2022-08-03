@@ -187,5 +187,5 @@ def main():
     hist_feats_loc(final_list, nb_feats, df_to_predict, id_client)
 
 
-if __name__ == "__main__":
-    main()
+#if __name__ == "__main__":
+main()
