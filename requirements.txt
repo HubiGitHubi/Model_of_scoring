@@ -7,7 +7,7 @@ dill
 lime~=0.2.0.1
 
 
-flask
+flask == 2.2
 pandas
 altair~=4.2.0
 matplotlib
