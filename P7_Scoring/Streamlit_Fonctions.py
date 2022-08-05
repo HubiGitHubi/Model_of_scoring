@@ -39,11 +39,10 @@ def nb_neighbours():
 
 
 def multi_choice_neighbours():
-    options=st.multiselect(
+    options = st.sidebar.multiselect(
         'What kind of K neighbours graph do you want ?',
-        ['Positive clients (1)', 'Negatives clients (0)', 'all clients mixed (1&0)'])
+        ['Positive clients (1)', 'Negatives clients (0)', 'all clients mixed (1&0)'], ['all clients mixed (1&0)'])
 
-    st.write('You selected:', options)
     return options
 
 
