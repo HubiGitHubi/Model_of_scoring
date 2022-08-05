@@ -215,7 +215,7 @@ def hist_feats_loc(final_list, nb_feats, df_to_predict,data_client):
         ax = axs.flat[i]
         ax.hist(df_to_predict[[_c]], bins=20)
         ax.axvline(data_client[_c][0], color='red')
-        ax.legend(['Other clients', 'The client'])
+        ax.legend([ 'The client','Other clients'])
         ax.set_title(_c)
         fig.set_tight_layout(True)
     st.pyplot(fig)
