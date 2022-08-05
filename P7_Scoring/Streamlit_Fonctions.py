@@ -240,8 +240,6 @@ def hist_feats_loc( final_list, nb_feats, df_to_predict, data_client ):
 
 
 def Calculate_neighbourhood( df, df_to_predict, nb_neighbours, final_list ):
-    st.write(df.shape)
-    st.write(df_to_predict.columns)
 
     # return the closest neighbors final feats list (nb_neighbours chosen by the user)
     neighbors = NearestNeighbors(n_neighbors=nb_neighbours).fit(df.drop(['SK_ID_CURR', 'TARGET'], axis=1))
