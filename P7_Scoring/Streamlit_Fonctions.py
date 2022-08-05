@@ -242,7 +242,7 @@ def hist_feats_loc( final_list, nb_feats, df_to_predict, data_client ):
 def Calculate_neighbourhood( df, df_to_predict, nb_neighbours, final_list ):
     # return the closest neighbors final feats list (nb_neighbours chosen by the user)
     neighbors = NearestNeighbors(n_neighbors=nb_neighbours).fit(df.drop(['SK_ID_CURR', 'TARGET'], axis=1))
-    index_neighbors = neighbors.kneighbors(X=df_to_predict,
+    index_neighbors = neighbors.kneighbors(X=df_to_predict.drop(['SK_ID_CURR', 'score'], axis=1),
                                            n_neighbors=nb_neighbours).ravel()
     neighbors = df.loc[index_neighbors, final_list]
     return neighbors
@@ -253,8 +253,8 @@ def Calculate_neighbourhood_positive( df, df_to_predict, nb_neighbours, final_li
     df_to_predict_pos = df_to_predict[df_to_predict["TARGET"] == 1]
 
     # return the closest neighbors final feats list (nb_neighbours chosen by the user)
-    neighbors_pos = NearestNeighbors(n_neighbors=nb_neighbours).fit(df_pos.drop(['SK_ID_CURR', 'TARGET'], axis=1))
-    index_neighbors = neighbors_pos.kneighbors(X=df_to_predict_pos,
+    neighbors_pos = NearestNeighbors(n_neighbors=nb_neighbours).fit(df_pos.drop(['TARGET'], axis=1))
+    index_neighbors = neighbors_pos.kneighbors(X=df_to_predict_pos.drop(['score'], axis=1),
                                                n_neighbors=nb_neighbours).ravel()
     neighbors_pos = df_pos.loc[index_neighbors, final_list]
     return neighbors_pos
@@ -265,8 +265,8 @@ def Calculate_neighbourhood_negative( df, df_to_predict, nb_neighbours, final_li
     df_to_predict_neg = df_to_predict[df_to_predict["TARGET"] == 0]
 
     # return the closest neighbors final feats list (nb_neighbours chosen by the user)
-    neighbors_neg = NearestNeighbors(n_neighbors=nb_neighbours).fit(df_neg.drop(['SK_ID_CURR', 'TARGET'], axis=1))
-    index_neighbors = neighbors_neg.kneighbors(X=df_to_predict_neg,
+    neighbors_neg = NearestNeighbors(n_neighbors=nb_neighbours).fit(df_neg.drop(['TARGET'], axis=1))
+    index_neighbors = neighbors_neg.kneighbors(X=df_to_predict_neg.drop(['score'], axis=1),
                                                n_neighbors=nb_neighbours).ravel()
     neighbors_neg = df_neg.loc[index_neighbors, final_list]
     return neighbors_neg
