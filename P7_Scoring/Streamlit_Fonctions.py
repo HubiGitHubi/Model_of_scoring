@@ -217,7 +217,7 @@ def hist_feats_loc(final_list, nb_feats, df_to_predict,data_client):
         st.write(data_client[_c][0])
         ax.scatter(data_client[_c], 1000, color='red')
 
-        ax.axvline(data_client[_c], color='red')
+        ax.axvline(data_client[_c][0], color='red')
         ax.set_title(_c)
         fig.set_tight_layout(True)
     st.pyplot(fig)
