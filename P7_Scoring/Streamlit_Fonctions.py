@@ -243,7 +243,7 @@ def Calculate_neighbourhood( df, df_to_predict, nb_neighbours, final_list ):
 
     # return the closest neighbors final feats list (nb_neighbours chosen by the user)
     neighbors = NearestNeighbors(n_neighbors=nb_neighbours).fit(df.drop(['SK_ID_CURR', 'TARGET'], axis=1))
-    st.write(neighbors.shape)
+    st.write(neighbors)
 
     index_neighbors = neighbors.kneighbors(X=df_to_predict.drop(['SK_ID_CURR', 'score'], axis=1),
                                            n_neighbors=nb_neighbours)#.ravel()
