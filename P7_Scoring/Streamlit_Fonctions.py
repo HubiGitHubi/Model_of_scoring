@@ -214,7 +214,7 @@ def hist_feats_loc(final_list, nb_feats, df_to_predict,data_client):
     for i, _c in enumerate(final_list):
         ax = axs.flat[i]
         ax.hist(df_to_predict[[_c]], bins=20)
-        plt.axline((data_client[_c], 0), (df_to_predict[[_c]].max(), 0), color='red')
+        plt.axvline(data_client[_c], color='red')
         ax.set_title(_c)
         fig.set_tight_layout(True)
     st.pyplot(fig)
