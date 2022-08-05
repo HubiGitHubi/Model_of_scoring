@@ -7,8 +7,10 @@ import streamlit as st
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-
 # main function
+from sklearn.neighbors import NearestNeighbors
+
+
 def main():
     # URL = "http://192.168.1.27:8501/app/"
     # URL = "http://127.0.0.1:5000/app/"
@@ -33,8 +35,13 @@ def main():
             "How many local features do you want ?", 2, 15, step=1)
         return nb_feats
 
+    def nb_neighbours():
+        nb_neighbours = st.sidebar.slider(
+            "How many local neighbours do you want ?", 10, 456250, step=1)
+        return nb_neighbours
+
     # ___________ List of api Requests functions
-    #@st.cache
+    # @st.cache
     def get_train_test_dashboard() -> object:
         # URL of the API + get_train_test
         api_url = URL + 'get_train_test_values'
@@ -47,7 +54,9 @@ def main():
         df_drop = pd.DataFrame(json.loads(response.content['df_drop']))
         cols = pd.Series(json.loads(response.content['cols']))
         df_to_predict = pd.DataFrame(json.loads(response.content['df_to_predict']))
-        return df, df_drop, cols, df_to_predict
+        df_full = pd.DataFrame(json.loads(response.content['df_full']))
+
+        return df, df_drop, cols, df_to_predict, df_full
 
     @st.cache
     def Calculate_all_data_dashboard():
@@ -167,6 +176,58 @@ def main():
         for i, _c in enumerate(final_list):
             ax = axs.flat[i]
             ax.hist(df_to_predict[[_c]], bins=20)
+            ax.set_title(_c)
+            fig.set_tight_layout(True)
+        st.pyplot(fig)
+
+    # find 20 nearest neighbors among the training set
+    def Calculate_neighbourhood(df, df_to_predict, nb_neighbours, final_list):
+
+        # return the closest neighbors final feats list (nb_neighbours chosen by the user)
+        neighbors = NearestNeighbors(n_neighbors=nb_neighbours).fit(df.drop(['SK_ID_CURR', 'TARGET'], axis=1))
+        index_neighbors = neighbors.kneighbors(X=df_to_predict,
+                                               n_neighbors=nb_neighbours).ravel()
+        neighbors = df.loc[index_neighbors, final_list]
+        return neighbors
+
+    def Calculate_neighbourhood_positive(df, df_to_predict, nb_neighbours, final_list):
+
+        df_pos = df[df["TARGET"] == 1]
+        df_to_predict_pos = df_to_predict[df_to_predict["TARGET"] == 1]
+
+        # return the closest neighbors final feats list (nb_neighbours chosen by the user)
+        neighbors_pos = NearestNeighbors(n_neighbors=nb_neighbours).fit(df_pos.drop(['SK_ID_CURR', 'TARGET'], axis=1))
+        index_neighbors = neighbors_pos.kneighbors(X=df_to_predict_pos,
+                                                   n_neighbors=nb_neighbours).ravel()
+        neighbors_pos = df_pos.loc[index_neighbors, final_list]
+        return neighbors_pos
+
+    def Calculate_neighbourhood_negative(df, df_to_predict, nb_neighbours, final_list):
+
+        df_neg = df[df["TARGET"] == 0]
+        df_to_predict_neg = df_to_predict[df_to_predict["TARGET"] == 0]
+
+        # return the closest neighbors final feats list (nb_neighbours chosen by the user)
+        neighbors_neg = NearestNeighbors(n_neighbors=nb_neighbours).fit(df_neg.drop(['SK_ID_CURR', 'TARGET'], axis=1))
+        index_neighbors = neighbors_neg.kneighbors(X=df_to_predict_neg,
+                                                   n_neighbors=nb_neighbours).ravel()
+        neighbors_neg = df_neg.loc[index_neighbors, final_list]
+        return neighbors_neg
+
+    def plot_neigh(neighbors_neg, final_list):
+        # Plot local most important feats for the number of chosen neighbours
+
+        _ = math.ceil(math.sqrt(len(final_list)))
+        if nb_feats // _ == nb_feats / _:
+            nb_cols = nb_feats // _
+        else:
+            nb_cols = nb_feats // _ + 1
+
+        fig, axs = plt.subplots(_, nb_cols, sharey=True)
+
+        for i, _c in enumerate(final_list):
+            ax = axs.flat[i]
+            ax.hist(neighbors_neg[[_c]], bins=20)
             ax.set_title(_c)
             fig.set_tight_layout(True)
         st.pyplot(fig)

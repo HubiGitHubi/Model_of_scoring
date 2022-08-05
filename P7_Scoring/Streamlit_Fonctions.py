@@ -31,6 +31,12 @@ def nb_feats_side_bar():
     return nb_feats
 
 
+def nb_neighbours():
+    nb_neighbours = st.sidebar.slider(
+        "How many local neighbours do you want ?", 2, 15, step=1)
+    return nb_neighbours
+
+
 def get_my_model() -> object:
     """
 
@@ -194,7 +200,7 @@ def find_loc_feat_importance(explanation_list, df_to_predict):
     return final_list
 
 
-def hist_feats_loc(final_list, nb_feats, df_to_predict):
+def hist_feats_loc(final_list, nb_feats, df_to_predict,data_client):
     # Plot the number of chosen local most important feats
 
     _ = math.ceil(math.sqrt(len(final_list)))
@@ -208,9 +214,84 @@ def hist_feats_loc(final_list, nb_feats, df_to_predict):
     for i, _c in enumerate(final_list):
         ax = axs.flat[i]
         ax.hist(df_to_predict[[_c]], bins=20)
+        ax.scatter(data_client[_c],color='red')
         ax.set_title(_c)
         fig.set_tight_layout(True)
     st.pyplot(fig)
+
+
+# ______________________________________________________________________________________________________________________
+# find 20 nearest neighbors among the training set
+def get_df_neigh(selected_id_customer):
+    # fit nearest neighbors among the selection
+    NN = NearestNeighbors(n_neighbors=20)
+    NN.fit(X_train)  # X_train_NN
+    X_cust = X.loc[selected_id_customer: selected_id_customer]  # X_test
+    idx = NN.kneighbors(X=X_cust,
+                        n_neighbors=20,
+                        return_distance=False).ravel()
+    nearest_cust_idx = list(X_train.iloc[idx].index)
+    # data and target of neighbors
+    # ----------------------------
+    x_neigh = X_train.loc[nearest_cust_idx, :]
+    y_neigh = y_train.loc[nearest_cust_idx]
+
+    return x_neigh, y_neigh
+
+
+# Test local : http://127.0.0.1:5000/app/neigh_cust/?SK_ID_CURR=165690
+@app.route('/app/neigh_cust/')  # ==> OK
+def neigh_cust():
+    selected_id_customer = int(request.args.get('SK_ID_CURR'))
+    # Parse the http request to get arguments (selected_id), return the nearest neighbors
+    data_neigh, y_neigh = get_df_neigh(selected_id_customer)
+    # Convert to JSON
+    data_neigh_json = json.loads(data_neigh.to_json())
+    y_neigh_json = json.loads(y_neigh.to_json())
+    # Return the cleaned data jsonified
+    return jsonify({'status': 'ok',
+                    'y_neigh': y_neigh_json,
+                    'data_neigh': data_neigh_json},  # 'x_cust': x_cust_json},
+                   )
+
+
+# find 10000 nearest neighbors among the training set
+def get_df_thousand_neigh(selected_id_customer):
+    # fit nearest neighbors among the selection
+    thousand_nn = NearestNeighbors(n_neighbors=500)  # len(X_train)
+    thousand_nn.fit(X_train)  # X_train_NN
+    X_cust = X.loc[selected_id_customer: selected_id_customer]  # X_test
+    idx = thousand_nn.kneighbors(X=X_cust,
+                                 n_neighbors=500,  # len(X_train)
+                                 return_distance=False).ravel()
+    nearest_cust_idx = list(X_train.iloc[idx].index)
+    # data and target of neighbors
+    # ----------------------------
+    x_thousand_neigh = X_train.loc[nearest_cust_idx, :]
+    y_thousand_neigh = y_train.loc[nearest_cust_idx]
+    return x_thousand_neigh, y_thousand_neigh, X_cust
+
+
+@app.route('/app/thousand_neigh/')  # ==> ok
+# get shap values of the customer and 20 nearest neighbors
+# Test local : http://127.0.0.1:5000/app/thousand_neigh/?SK_ID_CURR=165690
+def thous_neigh():
+    # Parse http request to get arguments (sk_id_cust)
+    selected_id_customer = int(request.args.get('SK_ID_CURR'))
+    # return the nearest neighbors
+    x_thousand_neigh, y_thousand_neigh, x_customer = get_df_thousand_neigh(selected_id_customer)
+    # Converting the pd.Series to JSON
+    x_thousand_neigh_json = json.loads(x_thousand_neigh.to_json())
+    y_thousand_neigh_json = json.loads(y_thousand_neigh.to_json())
+    x_customer_json = json.loads(x_customer.to_json())
+    # Returning the processed data
+    return jsonify({'status': 'ok',
+                    'X_thousand_neigh': x_thousand_neigh_json,
+                    'x_custom': x_customer_json,
+                    'y_thousand_neigh': y_thousand_neigh_json})
+
+
+# ______________________________________________________________________________________________________________________
 
 
 def main():

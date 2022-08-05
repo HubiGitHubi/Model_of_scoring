@@ -33,7 +33,7 @@ def get_my_model() -> object:
         with open('Datas/best_model', 'rb') as f1:
             my_model = pickle.load(f1)
     except:
-        with open('../Datas/best_model', 'rb') as f1:
+        with open('Datas/best_model', 'rb') as f1:
             my_model = pickle.load(f1)
     return my_model
 
@@ -44,7 +44,7 @@ def get_my_explainer():
         with open('Datas/explainer', 'rb') as f:
             explainer = pickle.load(f, errors="ignore")
     except:
-        with open('../Datas/explainer', 'rb') as f:
+        with open('Datas/explainer', 'rb') as f:
             explainer = pickle.load(f, errors="ignore")
     return explainer
 
@@ -65,8 +65,8 @@ def get_train_test() -> object:
 
     df_drop = df.drop(['SK_ID_CURR', 'TARGET'], axis=1)
     cols = pd.DataFrame(df_drop.columns, columns=['Features'])
-
-    return df, df_drop, cols, df_to_predict
+    df_full = pd.concat([df, df_to_predict], axis=1)
+    return df, df_drop, cols, df_to_predict, df_full
 
 
 def Calculate_all_scores(df_to_predict, df_drop, model):
@@ -103,7 +103,7 @@ def predict_proba_client(data_client, model):
 
 # noinspection PyProtectedMember
 def features_importance_global(model, cols):
-    # Caluclate the global features importance
+    # Calculate the global features importance
     try:
         feat_importance = pd.DataFrame(np.array(model.best_estimator_._final_estimator.feature_importances_[0]),
                                        columns=["feat_importance"])
@@ -118,7 +118,7 @@ def features_importance_global(model, cols):
 
 
 def local_importance(model, data_client, explainer, nb_feats):
-    with open('../explainer', 'wb') as f:
+    with open('explainer', 'wb') as f:
         dill.dump(explainer, f)
     explanation = explainer.explain_instance(data_client.values.reshape(-1),
                                              model.predict_proba,
