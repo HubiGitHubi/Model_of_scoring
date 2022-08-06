@@ -163,7 +163,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def beginning():
-    return "Model and data are now loaded"
+    return "Model and data are now loaded vincent_version"
 
 
 # Putting ids in dictionary (json file)
