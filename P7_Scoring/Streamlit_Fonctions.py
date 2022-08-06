@@ -102,7 +102,7 @@ def get_train_test() -> object:
     return df, df_drop, cols, df_to_predict
 
 
-def Calculate_all_scores(df_to_predict, df_drop, model):
+def Calculate_all_scores( df_to_predict, df_drop, model ):
     # Calculate score for every client and store it in df
     data_clients_std_train = pd.DataFrame(StandardScaler().fit(df_drop).transform(df_drop), columns=df_drop.columns)
     data_clients_std = pd.DataFrame(StandardScaler().fit(df_drop).transform(df_to_predict.drop(['SK_ID_CURR'], axis=1)),
@@ -116,7 +116,7 @@ def calculate_data_client( id_client, df_to_predict, data_clients_std ):
     data_client_std = data_clients_std[df_to_predict.SK_ID_CURR == id_client]
     data_client = df_to_predict[df_to_predict.SK_ID_CURR == id_client]
 
-    return data_client_std,data_client  # jsonify(_json.load(score.to_json()))
+    return data_client_std, data_client  # jsonify(_json.load(score.to_json()))
 
 
 def calculate_score_id_client( id_client, df_to_predict, data_client_std ):
@@ -241,45 +241,39 @@ def hist_feats_loc( final_list, nb_feats, df_to_predict, data_client ):
     # find 20 nearest neighbors among the training set
 
 
-def Calculate_neighbourhood(df, df_to_predict, nb_neighbours, final_list,data_client):
-
+def Calculate_neighbourhood( df, nb_neighbours, final_list, data_client ):
     # return the closest neighbors final feats list (nb_neighbours chosen by the user)
     neighbors = NearestNeighbors(n_neighbors=nb_neighbours).fit(df.drop(['SK_ID_CURR', 'TARGET'], axis=1))
 
     index_neighbors = neighbors.kneighbors(X=data_client.drop(['SK_ID_CURR', 'score'], axis=1).values,
                                            n_neighbors=nb_neighbours, return_distance=False).ravel()
 
-
-    st.write(index_neighbors)
-
     neighbors = df.loc[index_neighbors, final_list]
     st.write(neighbors)
     return neighbors
 
-"""
-def Calculate_neighbourhood_positive( df, df_to_predict, nb_neighbours, final_list ):
+
+def Calculate_neighbourhood_positive( df, nb_neighbours, final_list, data_client ):
     df_pos = df[df["TARGET"] == 1]
-    df_to_predict_pos = df_to_predict[df_to_predict["score"] == 1]
 
     # return the closest neighbors final feats list (nb_neighbours chosen by the user)
-    neighbors_pos = NearestNeighbors(n_neighbors=nb_neighbours).fit(df_pos.drop(['TARGET'], axis=1))
-    index_neighbors = neighbors_pos.kneighbors(X=df_to_predict_pos.drop(['score'], axis=1),
+    neighbors_pos = NearestNeighbors(n_neighbors=nb_neighbours).fit(df_pos.drop(['SK_ID_CURR', 'TARGET'], axis=1))
+    index_neighbors = neighbors_pos.kneighbors(X=data_client.drop(['SK_ID_CURR', 'score'], axis=1),
                                                n_neighbors=nb_neighbours).ravel()
     neighbors_pos = df_pos.loc[index_neighbors, final_list]
     return neighbors_pos
 
 
-def Calculate_neighbourhood_negative( df, df_to_predict, nb_neighbours, final_list ):
+def Calculate_neighbourhood_negative( df, nb_neighbours, final_list, data_client ):
     df_neg = df[df["TARGET"] == 0]
-    df_to_predict_neg = df_to_predict[df_to_predict["score"] == 0]
 
     # return the closest neighbors final feats list (nb_neighbours chosen by the user)
-    neighbors_neg = NearestNeighbors(n_neighbors=nb_neighbours).fit(df_neg.drop(['TARGET'], axis=1))
-    index_neighbors = neighbors_neg.kneighbors(X=df_to_predict_neg.drop(['score'], axis=1),
+    neighbors_neg = NearestNeighbors(n_neighbors=nb_neighbours).fit(df_neg.drop(['SK_ID_CURR', 'TARGET'], axis=1))
+    index_neighbors = neighbors_neg.kneighbors(X=data_client.drop(['SK_ID_CURR', 'score'], axis=1),
                                                n_neighbors=nb_neighbours).ravel()
     neighbors_neg = df_neg.loc[index_neighbors, final_list]
     return neighbors_neg
-"""
+
 
 def plot_neigh( neighbors, final_list, nb_feats ):
     # Plot local most important feats for the number of chosen neighbours
@@ -327,17 +321,17 @@ def main():
         hist_feats_loc(final_list, nb_feats, df_to_predict, data_client)
 
         if 'all clients mixed (1&0)' in options:
-            neighbors = Calculate_neighbourhood(df, df_to_predict, nb_neighbours, final_list, data_client)
+            neighbors = Calculate_neighbourhood(df, nb_neighbours, final_list, data_client)
             plot_neigh(neighbors, final_list, nb_feats)
-        """
+
         if 'Positive clients (1)' in options:
-            neighbors_pos = Calculate_neighbourhood_positive(df, df_to_predict, nb_neighbours, final_list)
+            neighbors_pos = Calculate_neighbourhood_positive(df, nb_neighbours, final_list, data_client)
             plot_neigh(neighbors_pos, final_list, nb_feats)
 
         if 'Negatives clients (0)' in options:
-            neighbors_neg = Calculate_neighbourhood_negative(df, df_to_predict, nb_neighbours, final_list)
+            neighbors_neg = Calculate_neighbourhood_negative(df, nb_neighbours, final_list, data_client)
             plot_neigh(neighbors_neg, final_list, nb_feats)
-        """
+
 
 # if __main__ == "main()":
 main()
