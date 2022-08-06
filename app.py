@@ -177,22 +177,8 @@ def ids_list():
     # jsonify is a helper method provided by Flask to properly return JSON data.
     return jsonify(customers_id_list_json)
 
-# @app.route("/get_my_model_values")
-# def get_my_model():
-#    model_json = json.loads(model.to_json())
-#   return jsonify({'my_model': model_json})
 
-
-# @app.route("/app/get_my_explainer_values")
-# def get_my_explainer(explainer):
-# Charge the explainer'
-
-#   explainer_json = json.loads(explainer.to_json())
-
-#  return jsonify({'explainer': explainer_json})
-
-
-@app.route('/app/get_train_test_values')
+@app.route('/get_train_test_values/')
 def get_train_test() -> object:
     df_json = json.loads(df.to_json())
     df_drop_json = json.loads(df_drop.to_json())
