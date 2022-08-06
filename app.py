@@ -166,6 +166,17 @@ def beginning():
     return "Model and data are now loaded"
 
 
+# Putting ids in dictionary (json file)
+@app.route('/ids/')
+def ids_list():
+    # Extract list of all the 'SK_ID_CURR' ids in the X_test dataframe
+    customers_id_list = df["SK_ID_CURR"].sort_values()
+    # Convert Series to JSON
+    customers_id_list_json = json.loads(customers_id_list.to_json())
+    # Returning the processed data
+    # jsonify is a helper method provided by Flask to properly return JSON data.
+    return jsonify(customers_id_list_json)
+
 # @app.route("/get_my_model_values")
 # def get_my_model():
 #    model_json = json.loads(model.to_json())
