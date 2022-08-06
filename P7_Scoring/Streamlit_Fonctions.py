@@ -217,7 +217,7 @@ def find_loc_feat_importance( explanation_list, df_to_predict ):
     return final_list
 
 
-def hist_feats_loc( final_list, nb_feats, df_to_predict, data_client_std ):
+def hist_feats_loc( final_list, nb_feats, df_to_predict, data_client ):
     # Plot the number of chosen local most important feats
 
     _ = math.ceil(math.sqrt(len(final_list)))
@@ -231,7 +231,7 @@ def hist_feats_loc( final_list, nb_feats, df_to_predict, data_client_std ):
     for i, _c in enumerate(final_list):
         ax = axs.flat[i]
         ax.hist(df_to_predict[[_c]], bins=20)
-        ax.axvline(data_client_std[_c][0], color='red')
+        ax.axvline(data_client[_c][0], color='red')
         ax.legend({'The client', 'Other clients'})
         ax.set_title(_c)
         fig.set_tight_layout(True)
@@ -325,10 +325,10 @@ def main():
         explainer = get_my_explainer()
         explanation_list = local_importance(model, data_client_std, explainer, nb_feats)
         final_list = find_loc_feat_importance(explanation_list, df_to_predict)
-        hist_feats_loc(final_list, nb_feats, df_to_predict, data_client_std)
+        hist_feats_loc(final_list, nb_feats, df_to_predict, data_client)
 
         if 'all clients mixed (1&0)' in options:
-            neighbors = Calculate_neighbourhood(df, df_to_predict, nb_neighbours, final_list)
+            neighbors = Calculate_neighbourhood(df, df_to_predict, nb_neighbours, final_list, data_client)
             plot_neigh(neighbors, final_list, nb_feats)
         """
         if 'Positive clients (1)' in options:
