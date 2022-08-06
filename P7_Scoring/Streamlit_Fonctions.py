@@ -113,7 +113,7 @@ def Calculate_all_scores(df_to_predict, df_drop, model):
 
 def calculate_data_client( id_client, df_to_predict, data_clients_std ):
     # Return the data of the chosen client
-    data_client_std = data_client_stds[df_to_predict.SK_ID_CURR == id_client]
+    data_client_std = data_clients_std[df_to_predict.SK_ID_CURR == id_client]
     data_client = df_to_predict[df_to_predict.SK_ID_CURR == id_client]
 
     return data_client_std,data_client  # jsonify(_json.load(score.to_json()))
