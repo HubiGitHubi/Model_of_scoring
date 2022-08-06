@@ -245,7 +245,7 @@ def Calculate_neighbourhood( df, df_to_predict, nb_neighbours, final_list ):
     neighbors = NearestNeighbors(n_neighbors=nb_neighbours).fit(df.drop(['SK_ID_CURR', 'TARGET'], axis=1))
 
     index_neighbors = neighbors.kneighbors(X=df_to_predict.drop(['SK_ID_CURR', 'score'], axis=1),
-                                           n_neighbors=nb_neighbours).ravel()
+                                           n_neighbors=nb_neighbours, return_distance = False)#.ravel()
     st.write(index_neighbors)
 
     neighbors = df.loc[index_neighbors, final_list]
