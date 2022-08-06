@@ -249,7 +249,6 @@ def Calculate_neighbourhood( df, nb_neighbours, final_list, data_client ):
                                            n_neighbors=nb_neighbours, return_distance=False).ravel()
 
     neighbors = df.loc[index_neighbors, final_list]
-    st.write(neighbors)
     return neighbors
 
 
