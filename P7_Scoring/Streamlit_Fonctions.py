@@ -249,11 +249,10 @@ def Calculate_neighbourhood(df, df_to_predict, nb_neighbours, final_list,data_cl
     index_neighbors = neighbors.kneighbors(X=data_client.drop(['SK_ID_CURR', 'score'], axis=1).values,
                                            n_neighbors=nb_neighbours, return_distance=False).ravel()
 
-    #index_neighbors = neighbors.kneighbors_graph([df_to_predict['SK_ID_CURR']]).indices
 
     st.write(index_neighbors)
 
-    neighbors = df.loc[index_neighbors.index, final_list]
+    neighbors = df.loc[index_neighbors, final_list]
     st.write(neighbors)
     return neighbors
 
