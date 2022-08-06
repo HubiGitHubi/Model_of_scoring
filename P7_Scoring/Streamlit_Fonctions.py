@@ -113,14 +113,16 @@ def Calculate_all_scores(df_to_predict, df_drop, model):
 
 def calculate_data_client( id_client, df_to_predict, data_clients_std ):
     # Return the data of the chosen client
-    data_client = data_clients_std[df_to_predict.SK_ID_CURR == id_client]
-    return data_client  # jsonify(_json.load(score.to_json()))
+    data_client_std = data_client_stds_std[df_to_predict.SK_ID_CURR == id_client]
+    data_client = df_to_predict[df_to_predict.SK_ID_CURR == id_client]
+
+    return data_client_std,data_client  # jsonify(_json.load(score.to_json()))
 
 
-def calculate_score_id_client( id_client, df_to_predict, data_client ):
+def calculate_score_id_client( id_client, df_to_predict, data_client_std ):
     # Return the score of the chosen client. If the client is not in the dtb, return -1
 
-    if len(data_client) > 0:
+    if len(data_client_std) > 0:
         score = int(df_to_predict.score[df_to_predict.SK_ID_CURR == id_client])
     else:
         score = -1
@@ -128,9 +130,9 @@ def calculate_score_id_client( id_client, df_to_predict, data_client ):
     return score  # jsonify(_json.load(score.to_json()))
 
 
-def predict_proba_client( data_client, model ):
+def predict_proba_client( data_client_std, model ):
     # Return proba of success/failure of a client
-    proba_client = model.predict_proba(data_client)
+    proba_client = model.predict_proba(data_client_std)
     return proba_client
 
 
@@ -181,10 +183,10 @@ def plot_feat_importance_values( df_plot ):
     st.write(fig)
 
 
-def local_importance( model, data_client, explainer, nb_feats ):
+def local_importance( model, data_client_std, explainer, nb_feats ):
     with open('../explainer', 'wb') as f:
         dill.dump(explainer, f)
-    explanation = explainer.explain_instance(data_client.values.reshape(-1),
+    explanation = explainer.explain_instance(data_client_std.values.reshape(-1),
                                              model.predict_proba,
                                              num_features=nb_feats)
 
@@ -215,7 +217,7 @@ def find_loc_feat_importance( explanation_list, df_to_predict ):
     return final_list
 
 
-def hist_feats_loc( final_list, nb_feats, df_to_predict, data_client ):
+def hist_feats_loc( final_list, nb_feats, df_to_predict, data_client_std ):
     # Plot the number of chosen local most important feats
 
     _ = math.ceil(math.sqrt(len(final_list)))
@@ -229,7 +231,7 @@ def hist_feats_loc( final_list, nb_feats, df_to_predict, data_client ):
     for i, _c in enumerate(final_list):
         ax = axs.flat[i]
         ax.hist(df_to_predict[[_c]], bins=20)
-        ax.axvline(data_client[_c][0], color='red')
+        ax.axvline(data_client_std[_c][0], color='red')
         ax.legend({'The client', 'Other clients'})
         ax.set_title(_c)
         fig.set_tight_layout(True)
@@ -239,17 +241,17 @@ def hist_feats_loc( final_list, nb_feats, df_to_predict, data_client ):
     # find 20 nearest neighbors among the training set
 
 
-def Calculate_neighbourhood( df, df_to_predict, nb_neighbours, final_list ):
+def Calculate_neighbourhood(df, df_to_predict, nb_neighbours, final_list,data_client):
 
     # return the closest neighbors final feats list (nb_neighbours chosen by the user)
     neighbors = NearestNeighbors(n_neighbors=nb_neighbours).fit(df.drop(['SK_ID_CURR', 'TARGET'], axis=1))
 
-    index_neighbors = neighbors.kneighbors(X=df_to_predict.drop(['SK_ID_CURR', 'score'], axis=1).values,
-                                           n_neighbors=nb_neighbours, return_distance = False)#.ravel()
+    index_neighbors = neighbors.kneighbors(X=data_client.drop(['SK_ID_CURR', 'score'], axis=1).values,
+                                           n_neighbors=nb_neighbours, return_distance=False).ravel()
 
     #index_neighbors = neighbors.kneighbors_graph([df_to_predict['SK_ID_CURR']]).indices
 
-    st.write(index_neighbors.index)
+    st.write(index_neighbors)
 
     neighbors = df.loc[index_neighbors.index, final_list]
     st.write(neighbors)
@@ -308,8 +310,8 @@ def main():
     options = multi_choice_neighbours()
     model = get_my_model()
     data_clients_std, data_clients_std_train = Calculate_all_scores(df_to_predict, df_drop, model)
-    data_client = calculate_data_client(id_client, df_to_predict, data_clients_std)
-    score = calculate_score_id_client(id_client, df_to_predict, data_client)
+    data_client_std, data_client = calculate_data_client(id_client, df_to_predict, data_clients_std)
+    score = calculate_score_id_client(id_client, df_to_predict, data_client_std)
     score_to_score_str(score)
     df_feat_importance = features_importance_global(model, cols)
 
@@ -317,13 +319,13 @@ def main():
 
         if yes_no_feat_glob == 'Yes':
             plot_feat_importance_values(df_feat_importance)
-        proba_client = predict_proba_client(data_client, model)
+        proba_client = predict_proba_client(data_client_std, model)
         plot_proba_client(proba_client)
 
         explainer = get_my_explainer()
-        explanation_list = local_importance(model, data_client, explainer, nb_feats)
+        explanation_list = local_importance(model, data_client_std, explainer, nb_feats)
         final_list = find_loc_feat_importance(explanation_list, df_to_predict)
-        hist_feats_loc(final_list, nb_feats, df_to_predict, data_client)
+        hist_feats_loc(final_list, nb_feats, df_to_predict, data_client_std)
 
         if 'all clients mixed (1&0)' in options:
             neighbors = Calculate_neighbourhood(df, df_to_predict, nb_neighbours, final_list)
