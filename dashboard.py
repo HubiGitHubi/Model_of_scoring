@@ -63,6 +63,7 @@ def main():
     def get_df_dashboard() -> object:
         # URL of the API + get_df_values
         api_url = URL+'get_df_values'
+        st.write(api_url)
 
         # Requesting the API and saving the response
         response = requests.get(api_url)
