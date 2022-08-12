@@ -206,17 +206,19 @@ def get_df_to_predict() -> object:
     return jsonify(df_to_predict_json)
 
 
-@app.route('/Calculate_all_scores_values')
+@app.route('/Calculate_all_scores_values/')
 def Calculate_all_scores(data_clients_std, data_clients_std_train):
+
     data_clients_std_json = json.loads(data_clients_std.to_json())
     data_clients_std_train_json = json.loads(data_clients_std_train.to_json())
     return jsonify(data_clients_std_json, data_clients_std_train_json)
 
 
-@app.route('/calculate_data_client_values')
+@app.route('/calculate_data_client_values/')
 def calculate_data_client():
     # Return the data of the chosen client
     id_client = int(request.args.get('SK_ID_CURR'))
+    st.write(id_client)
     data_client = data_clients_std[df_to_predict.SK_ID_CURR == id_client]
     data_client_json = json.loads(data_client.to_json())
 
