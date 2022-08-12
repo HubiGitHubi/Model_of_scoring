@@ -178,28 +178,28 @@ def ids_list():
     return jsonify(customers_id_list_json)
 
 
-@app.route('/get_df_values/')
+@app.route('/app/get_df_values/')
 def get_df() -> object:
     df_json = json.loads(df.to_json())
 
     return jsonify(df_json)
 
 
-@app.route('/get_cols_values/')
+@app.route('/app/get_cols_values/')
 def get_cols() -> object:
     cols_json = json.loads(cols.to_json())
 
     return jsonify(cols_json)
 
 
-@app.route('/get_df_drop_values/')
+@app.route('/app/get_df_drop_values/')
 def get_df_drop() -> object:
     df_drop_json = json.loads(df_drop.to_json())
 
     return jsonify(df_drop_json)
 
 
-@app.route('/get_df_predict_values/')
+@app.route('/app/get_df_predict_values/')
 def get_df_to_predict() -> object:
     df_to_predict_json = json.loads(df_to_predict.to_json())
 
