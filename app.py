@@ -51,21 +51,21 @@ def get_my_explainer():
 def get_train_test() -> object:
     # try:
     path = 'Datas/data_clients.csv'
-    df = pd.read_csv(path).sample(frac=.5)
+    df = pd.read_csv(path).sample(frac=.3)
     # except:
     # path = 'C:/Users/33646/Documents/OpenClassroom/Projet 7/Model_of_scoring/Datas/data_clients.csv'
     # df = pd.read_csv(path)
     # try:
     path = 'Datas/data_clients_to_predict.csv'
-    df_to_predict = pd.read_csv(path)
+    df_to_predict = pd.read_csv(path).sample(frac=.1)
     # except:
     #   path = 'C:/Users/33646/Documents/OpenClassroom/Projet 7/Model_of_scoring/Datas/data_clients_to_predict.csv'
     #   df_to_predict = pd.read_csv(path)
 
-    df_drop = df.drop(['SK_ID_CURR', 'TARGET'], axis=1)
+    df_drop = df.drop(['SK_ID_CURR', 'TARGET'], axis=1).sample(frac=.1)
     cols = pd.DataFrame(df_drop.columns, columns=['Features'])
-    df_full = pd.concat([df, df_to_predict], axis=1)
-    return df, df_drop, cols, df_to_predict, df_full
+    #df_full = pd.concat([df, df_to_predict], axis=1).sample(frac=.1)
+    return df, df_drop, cols, df_to_predict#, df_full
 
 
 def Calculate_all_scores(df_to_predict, df_drop, model):
