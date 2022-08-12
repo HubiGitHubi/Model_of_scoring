@@ -35,7 +35,7 @@ def main():
 
     def nb_neighbours():
         nb_neighbours = st.sidebar.slider(
-            "How many local neighbours do you want ?", 10, 456250, step=1)
+            "How many local neighbours do you want ?", 10, 20000, step=1)
         return nb_neighbours
 
     def multi_choice_neighbours():
