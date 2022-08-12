@@ -178,42 +178,42 @@ def ids_list():
     return jsonify(customers_id_list_json)
 
 
-@app.route('/app/get_df_values/')
+@app.route('/get_df_values/')
 def get_df() -> object:
     df_json = json.loads(df.to_json())
 
     return jsonify(df_json)
 
 
-@app.route('/app/get_cols_values/')
+@app.route('/get_cols_values/')
 def get_cols() -> object:
     cols_json = json.loads(cols.to_json())
 
     return jsonify(cols_json)
 
 
-@app.route('/app/get_df_drop_values/')
+@app.route('/get_df_drop_values/')
 def get_df_drop() -> object:
     df_drop_json = json.loads(df_drop.to_json())
 
     return jsonify(df_drop_json)
 
 
-@app.route('/app/get_df_predict_values/')
+@app.route('/get_df_predict_values/')
 def get_df_to_predict() -> object:
     df_to_predict_json = json.loads(df_to_predict.to_json())
 
     return jsonify(df_to_predict_json)
 
 
-@app.route('/app/Calculate_all_scores_values')
+@app.route('/Calculate_all_scores_values')
 def Calculate_all_scores(data_clients_std, data_clients_std_train):
     data_clients_std_json = json.loads(data_clients_std.to_json())
     data_clients_std_train_json = json.loads(data_clients_std_train.to_json())
     return jsonify(data_clients_std_json, data_clients_std_train_json)
 
 
-@app.route('/app/calculate_data_client_values')
+@app.route('/calculate_data_client_values')
 def calculate_data_client():
     # Return the data of the chosen client
     id_client = int(request.args.get('SK_ID_CURR'))
@@ -223,7 +223,7 @@ def calculate_data_client():
     return jsonify(data_client_json)
 
 
-@app.route('/app/calculate_score_id_client_values')
+@app.route('/calculate_score_id_client_values')
 def calculate_score_id_client(df_to_predict, data_client):
     # Return the score of the chosen client. If the client is not in the dtb, return -1
     id_client = int(request.args.get('SK_ID_CURR'))
@@ -237,7 +237,7 @@ def calculate_score_id_client(df_to_predict, data_client):
     return jsonify(score_json)
 
 
-@app.route('/app/predict_proba_client_values')
+@app.route('/predict_proba_client_values')
 def predict_proba_client(data_client, model):
     # Return proba of success/failure of a client
     proba_client = model.predict_proba(data_client)
@@ -246,7 +246,7 @@ def predict_proba_client(data_client, model):
     return jsonify(proba_client_json)
 
 
-@app.route('/app/features_importance_global_values')
+@app.route('/features_importance_global_values')
 def features_importance_global(df_feat_importance):
     # Calculate the global features importance
     df_feat_importance_json = json.loads(df_feat_importance.to_json())
@@ -254,7 +254,7 @@ def features_importance_global(df_feat_importance):
     return jsonify(df_feat_importance_json)
 
 
-@app.route('/app/local_importance_values')
+@app.route('/local_importance_values')
 def local_importance(model, data_client, explainer, nb_feats):
     explanation = explainer.explain_instance(data_client.values.reshape(-1),
                                              model.predict_proba,
@@ -265,7 +265,7 @@ def local_importance(model, data_client, explainer, nb_feats):
     return jsonify(explanation_list_json, explanation_json)
 
 
-@app.route('/app/find_loc_feat_importance_values')
+@app.route('/find_loc_feat_importance_values')
 def find_loc_feat_importance(explanation_list, df_to_predict):
     # Return the name of most important locale features
     liste = []
