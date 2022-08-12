@@ -193,8 +193,7 @@ def get_df_to_predict() -> object:
 @app.route('/Calculate_all_datas_values/')
 def Calculate_all_datas():
     data_clients_std_json = json.loads(data_clients_std.to_json())
-    data_clients_std_train_json = json.loads(data_clients_std_train.to_json())
-    return jsonify(data_clients_std_json, data_clients_std_train_json)
+    return jsonify(data_clients_std_json)
 
 
 @app.route('/calculate_data_client_values/')

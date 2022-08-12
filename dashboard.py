@@ -102,18 +102,16 @@ def main():
         response = requests.get(api_url)
 
         data_clients_std = pd.DataFrame(json.loads(response.content))
-        data_clients_std_train = pd.DataFrame(json.loads(response.content))
-        return data_clients_std, data_clients_std_train
-
-
+        return data_clients_std
 
     @st.cache
     def calculate_data_client_dashboard():
         # URL of the API + calculate_data_client_values + id client
-        api_url = URL+"calculate_data_client_values/?id_client=" + str(id_client)
+        api_url = URL+"Calculate_all_datas_values/?id_client=" + str(id_client)
         # Requesting the API and saving the response
         response = requests.get(api_url)
-        data_client = pd.DataFrame(json.loads(response.content))
+        data_clients = pd.DataFrame(json.loads(response.content))
+        data_client = data_clients[df_to_predict.SK_ID_CURR == id_client]
 
         return data_client
 
@@ -279,21 +277,22 @@ def main():
     df = get_df_dashboard()
 
     df_to_predict = get_df_to_predict_dashboard()
-    cols = get_cols_dashboard
+    cols = get_cols_dashboard()
     df_drop = get_df_drop_dashboard()
     data_clients_std, data_clients_std_train = Calculate_all_data_dashboard()
 
     data_client = calculate_data_client_dashboard()
     score = calculate_score_id_client_dashboard()
-    proba_client = predict_proba_client_dashboard()
+
 
     # Plot the dashboard
     if yes_no_feat_glob == 1:
         df_feat_importance = features_importance_global_dashboard()
         plot_feat_importance_values(df_feat_importance)
 
-
     if score != -1:
+
+        proba_client = predict_proba_client_dashboard()
         explanation_list, explanation = local_importance_dashboard()
         final_list = find_loc_feat_importance_dashboard()
         score_to_score_str(score)
