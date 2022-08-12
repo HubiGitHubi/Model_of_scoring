@@ -51,7 +51,7 @@ def get_my_explainer():
 def get_train_test() -> object:
     # try:
     path = 'Datas/data_clients.csv'
-    df = pd.read_csv(path).sample(frac=.3)
+    df = pd.read_csv(path).sample(frac=.1)
     # except:
     # path = 'C:/Users/33646/Documents/OpenClassroom/Projet 7/Model_of_scoring/Datas/data_clients.csv'
     # df = pd.read_csv(path)
@@ -152,7 +152,7 @@ def find_loc_feat_importance(explanation_list, df_to_predict):
 
 
 # Import data, model, explainer
-df, df_drop, cols, df_to_predict, df_full = get_train_test()
+df, df_drop, cols, df_to_predict = get_train_test()
 model = get_my_model()
 data_clients_std, data_clients_std_train = Calculate_all_scores(df_to_predict, df_drop, model)
 df_feat_importance = features_importance_global(model, cols)
