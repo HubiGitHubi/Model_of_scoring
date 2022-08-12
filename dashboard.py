@@ -276,7 +276,7 @@ def main():
     yes_no_feat_glob = yes_no_feat_glob_side_bar()
     nb_feats = nb_feats_side_bar()
     options = multi_choice_neighbours()
-
+    nb_neighbours = nb_neighbours()
     # Import datas from Flask
     df = get_df_dashboard()
 

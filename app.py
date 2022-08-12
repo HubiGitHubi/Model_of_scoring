@@ -51,7 +51,7 @@ def get_my_explainer():
 def get_train_test() -> object:
     # try:
     path = 'Datas/data_clients.csv'
-    df = pd.read_csv(path)
+    df = pd.read_csv(path).sample(frac=.5)
     # except:
     # path = 'C:/Users/33646/Documents/OpenClassroom/Projet 7/Model_of_scoring/Datas/data_clients.csv'
     # df = pd.read_csv(path)
