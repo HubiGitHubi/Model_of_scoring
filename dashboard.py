@@ -277,8 +277,9 @@ def main():
     options = multi_choice_neighbours()
 
     # Import datas from Flask
-    df_to_predict = get_df_to_predict_dashboard()
     df = get_df_dashboard()
+
+    df_to_predict = get_df_to_predict_dashboard()
     cols = get_cols_dashboard
     df_drop = get_df_drop_dashboard()
     data_clients_std, data_clients_std_train = Calculate_all_data_dashboard()
