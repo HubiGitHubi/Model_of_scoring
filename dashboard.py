@@ -48,9 +48,9 @@ def main():
     # ___________ List of api Requests functions
     # @st.cache
     def get_df_to_predict_dashboard() -> object:
-        # URL of the API + get_train_test
+        # URL of the API + get_df_predict_values
         api_url = URL+'get_df_predict_values/'
-
+        st.write(api_url)
         # Requesting the API and saving the response
         response = requests.get(api_url)
         content = json.loads(response.content)
@@ -61,7 +61,7 @@ def main():
         return df_to_predict
 
     def get_df_dashboard() -> object:
-        # URL of the API + get_train_test
+        # URL of the API + get_df_values
         api_url = URL+'get_df_values'
 
         # Requesting the API and saving the response
@@ -73,7 +73,7 @@ def main():
         return df
 
     def get_cols_dashboard() -> object:
-        # URL of the API + get_train_test
+        # URL of the API + get_cols_values
         api_url = URL+'get_cols_values'
 
         # Requesting the API and saving the response
@@ -85,7 +85,7 @@ def main():
         return cols
 
     def get_df_drop_dashboard() -> object:
-        # URL of the API + get_train_test
+        # URL of the API + get_df_drop_values
         api_url = URL+'get_df_drop_values/'
 
         # Requesting the API and saving the response
