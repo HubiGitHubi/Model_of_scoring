@@ -293,5 +293,5 @@ def find_loc_feat_importance(explanation_list, df_to_predict):
     return jsonify(final_list_json)
 
 
-if __name__ == "__main__" :
+if __name__ == "__main__":
     app.run()
