@@ -1,4 +1,3 @@
-# Affichier uniquement le nbre de glob feat max ou la quantité demandé dans le slider
 import json
 
 import dill
@@ -12,7 +11,7 @@ import pandas as pd
 from flask import jsonify, Flask, request
 
 '''
-cd  C:/Users/33646/Documents/OpenClassroom/'Projet 7'/Model_of_scoring/P7_Scoring
+cd  C:/Users/33646/Documents/OpenClassroom/'Projet 7'/Model_of_scoring
 $env:FLASK_APP = "app"
 flask run'''
 
@@ -178,26 +177,39 @@ def ids_list():
     return jsonify(customers_id_list_json)
 
 
-@app.route('/get_train_test_values/')
-def get_train_test() -> object:
+@app.route('/get_df_values/')
+def get_df() -> object:
     df_json = json.loads(df.to_json())
-    df_drop_json = json.loads(df_drop.to_json())
+
+    return jsonify(df_json)
+
+
+@app.route('/get_cols_values/')
+def get_cols() -> object:
     cols_json = json.loads(cols.to_json())
+
+    return jsonify(cols_json)
+
+
+@app.route('/get_df_drop_values/')
+def get_df_drop() -> object:
+    df_drop_json = json.loads(df_drop.to_json())
+
+    return jsonify(df_drop_json)
+
+
+@app.route('/get_df_predict_values/')
+def get_df_to_predict() -> object:
     df_to_predict_json = json.loads(df_to_predict.to_json())
 
-    return jsonify({'df': df_json,
-                    'df_drop': df_drop_json,
-                    'cols': cols_json,
-                    'df_to_predict': df_to_predict_json})
+    return jsonify(df_to_predict_json)
 
 
 @app.route('/app/Calculate_all_scores_values')
 def Calculate_all_scores(data_clients_std, data_clients_std_train):
     data_clients_std_json = json.loads(data_clients_std.to_json())
     data_clients_std_train_json = json.loads(data_clients_std_train.to_json())
-    return jsonify({'status': 'ok',
-                    'data_clients_std': data_clients_std_json,
-                    'data_clients_std_train': data_clients_std_train_json})
+    return jsonify(data_clients_std_json, data_clients_std_train_json)
 
 
 @app.route('/app/calculate_data_client_values')
@@ -207,7 +219,7 @@ def calculate_data_client():
     data_client = data_clients_std[df_to_predict.SK_ID_CURR == id_client]
     data_client_json = json.loads(data_client.to_json())
 
-    return jsonify({'data_client': data_client_json})
+    return jsonify(data_client_json)
 
 
 @app.route('/app/calculate_score_id_client_values')
@@ -221,7 +233,7 @@ def calculate_score_id_client(df_to_predict, data_client):
         score = -1
     score_json = json.loads(score.to_json())
 
-    return jsonify({'score': score_json})
+    return jsonify(score_json)
 
 
 @app.route('/app/predict_proba_client_values')
@@ -230,7 +242,7 @@ def predict_proba_client(data_client, model):
     proba_client = model.predict_proba(data_client)
     proba_client_json = json.loads(proba_client.to_json())
 
-    return jsonify({'proba_client': proba_client_json})
+    return jsonify(proba_client_json)
 
 
 @app.route('/app/features_importance_global_values')
@@ -238,7 +250,7 @@ def features_importance_global(df_feat_importance):
     # Calculate the global features importance
     df_feat_importance_json = json.loads(df_feat_importance.to_json())
 
-    return jsonify({'df_feat_importance': df_feat_importance_json})
+    return jsonify(df_feat_importance_json)
 
 
 @app.route('/app/local_importance_values')
@@ -249,8 +261,7 @@ def local_importance(model, data_client, explainer, nb_feats):
     explanation_list = explanation.as_list()
     explanation_list_json = json.loads(explanation_list.to_json())
     explanation_json = json.loads(explanation_list.to_json())
-    return jsonify({'explanation_list': explanation_list_json,
-                    'Explanation': explanation_json})
+    return jsonify(explanation_list_json, explanation_json)
 
 
 @app.route('/app/find_loc_feat_importance_values')
@@ -274,7 +285,7 @@ def find_loc_feat_importance(explanation_list, df_to_predict):
             a = 1
     final_list_json = json.loads(final_list.to_json())
 
-    return jsonify({'final_list': final_list_json})
+    return jsonify(final_list_json)
 
 
 # if __name__ == main:
