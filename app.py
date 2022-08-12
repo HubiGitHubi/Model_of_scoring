@@ -216,14 +216,14 @@ def Calculate_all_scores(data_clients_std, data_clients_std_train):
 
 
 @app.route('/calculate_data_client_values/')
-def calculate_data_client_std(data_client):
+def calculate_data_client_std():
 
-    data_client_json = json.loads(data_client.to_json())
+    #data_client_json = json.loads(data_client.to_json())
 
     # Return the data of the chosen client
-    #id_client = int(request.args.get('SK_ID_CURR'))
-    #st.write(id_client)
-    #data_client = data_clients_std[df_to_predict.SK_ID_CURR == id_client]
+    id_client = int(request.args.get('SK_ID_CURR'))
+    st.write(id_client)
+    data_client_json = data_clients_std[df_to_predict.SK_ID_CURR == id_client]
 
 
 
