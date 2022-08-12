@@ -79,6 +79,7 @@ def Calculate_all_scores(df_to_predict, df_drop, model):
 
 def calculate_data_client(id_client, df_to_predict, data_clients_std):
     # Return the data of the chosen client
+
     data_client = data_clients_std[df_to_predict.SK_ID_CURR == id_client]
     return data_client  # jsonify(_json.load(score.to_json()))
 
@@ -162,7 +163,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def beginning():
-    return "Model and data are now loaded vincent_version"
+    return "Model and data are now loaded"
 
 
 # Putting ids in dictionary (json file)
