@@ -35,7 +35,7 @@ def main():
 
     def nb_neighbours():
         nb_neighbours = st.sidebar.slider(
-            "How many local neighbours do you want ?", 10, 20000, step=1)
+            "How many local neighbours do you want ?", 10, 20000, step=20)
         return nb_neighbours
 
     def multi_choice_neighbours():
@@ -55,7 +55,6 @@ def main():
         content = json.loads(response.content)
         st.write(content)
         df_to_predict = pd.DataFrame(json.loads(response.content))
-        # df_full = pd.DataFrame(json.loads(response.content['df_full']))
 
         return df_to_predict
 
@@ -67,7 +66,7 @@ def main():
         content = json.loads(response.content)
         st.write(content)
         df = pd.DataFrame(content)
-
+        st.write(df.SK_ID_CURR)
         return df
 
     def get_cols_dashboard() -> object:
@@ -294,21 +293,23 @@ def main():
     final_list = find_loc_feat_importance_dashboard()
     score_to_score_str(score)
     plot_proba_client(proba_client)
-    local_importance(explanation)
 
-    hist_feats_loc(final_list, nb_feats, df_to_predict)
+    if score != -1:
+        local_importance(explanation)
 
-    if 'all clients mixed (1&0)' in options:
-        neighbors = Calculate_neighbourhood(df, nb_neighbours, final_list, data_client)
-        plot_neigh(neighbors, final_list, nb_feats)
+        hist_feats_loc(final_list, nb_feats, df_to_predict)
 
-    if 'Positive clients (1)' in options:
-        neighbors_pos = Calculate_neighbourhood_positive(df, nb_neighbours, final_list, data_client)
-        plot_neigh(neighbors_pos, final_list, nb_feats)
+        if 'all clients mixed (1&0)' in options:
+            neighbors = Calculate_neighbourhood(df, nb_neighbours, final_list, data_client)
+            plot_neigh(neighbors, final_list, nb_feats)
 
-    if 'Negatives clients (0)' in options:
-        neighbors_neg = Calculate_neighbourhood_negative(df, nb_neighbours, final_list, data_client)
-        plot_neigh(neighbors_neg, final_list, nb_feats)
+        if 'Positive clients (1)' in options:
+            neighbors_pos = Calculate_neighbourhood_positive(df, nb_neighbours, final_list, data_client)
+            plot_neigh(neighbors_pos, final_list, nb_feats)
+
+        if 'Negatives clients (0)' in options:
+            neighbors_neg = Calculate_neighbourhood_negative(df, nb_neighbours, final_list, data_client)
+            plot_neigh(neighbors_neg, final_list, nb_feats)
 
 
 if __name__ == "__main__":
