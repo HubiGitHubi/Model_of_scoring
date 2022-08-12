@@ -7,7 +7,6 @@ from matplotlib import pyplot as plt
 from sklearn.preprocessing import StandardScaler
 import pickle
 import pandas as pd
-
 from flask import jsonify, Flask, request
 
 '''
@@ -52,20 +51,12 @@ def get_train_test() -> object:
     # try:
     path = 'Datas/data_clients.csv'
     df = pd.read_csv(path).sample(frac=.1)
-    # except:
-    # path = 'C:/Users/33646/Documents/OpenClassroom/Projet 7/Model_of_scoring/Datas/data_clients.csv'
-    # df = pd.read_csv(path)
-    # try:
     path = 'Datas/data_clients_to_predict.csv'
     df_to_predict = pd.read_csv(path).sample(frac=.1)
-    # except:
-    #   path = 'C:/Users/33646/Documents/OpenClassroom/Projet 7/Model_of_scoring/Datas/data_clients_to_predict.csv'
-    #   df_to_predict = pd.read_csv(path)
 
     df_drop = df.drop(['SK_ID_CURR', 'TARGET'], axis=1).sample(frac=.1)
     cols = pd.DataFrame(df_drop.columns, columns=['Features'])
-    #df_full = pd.concat([df, df_to_predict], axis=1).sample(frac=.1)
-    return df, df_drop, cols, df_to_predict#, df_full
+    return df, df_drop, cols, df_to_predict
 
 
 def Calculate_all_scores(df_to_predict, df_drop, model):
@@ -75,14 +66,6 @@ def Calculate_all_scores(df_to_predict, df_drop, model):
                                     columns=df_drop.columns)
     df_to_predict['score'] = model.predict(data_clients_std.values)
     return data_clients_std, data_clients_std_train
-
-
-def calculate_data_client(df_to_predict, data_clients_std):
-    # Return the data of the chosen client
-    id_client = int(request.args.get('SK_ID_CURR'))
-
-    data_client = data_clients_std[df_to_predict.SK_ID_CURR == id_client]
-    return data_client
 
 
 def calculate_score_id_client(id_client, df_to_predict, data_client):
@@ -207,9 +190,8 @@ def get_df_to_predict() -> object:
     return jsonify(df_to_predict_json)
 
 
-@app.route('/Calculate_all_scores_values/')
-def Calculate_all_scores(data_clients_std, data_clients_std_train):
-
+@app.route('/Calculate_all_datas_values/')
+def Calculate_all_datas():
     data_clients_std_json = json.loads(data_clients_std.to_json())
     data_clients_std_train_json = json.loads(data_clients_std_train.to_json())
     return jsonify(data_clients_std_json, data_clients_std_train_json)
@@ -219,8 +201,7 @@ def Calculate_all_scores(data_clients_std, data_clients_std_train):
 def calculate_data_client_std():
 
     # Return the data of the chosen client
-    id_client = int(request.args.get('SK_ID_CURR'))
-    st.write('id_client', id_client)
+    id_client = int(request.args.get('id_client'))
     data_client_json = data_clients_std[df_to_predict.SK_ID_CURR == id_client]
 
     return jsonify(data_client_json)
@@ -229,7 +210,7 @@ def calculate_data_client_std():
 @app.route('/calculate_score_id_client_values')
 def calculate_score_id_client(df_to_predict, data_client):
     # Return the score of the chosen client. If the client is not in the dtb, return -1
-    id_client = int(request.args.get('SK_ID_CURR'))
+    id_client = int(request.args.get('id_client'))
 
     if len(data_client) > 0:
         score = int(df_to_predict.score[df_to_predict.SK_ID_CURR == id_client])

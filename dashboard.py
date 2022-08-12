@@ -93,22 +93,24 @@ def main():
 
         return df_drop
 
-    #@st.cache
-    #def Calculate_all_data_dashboard():
+    @st.cache
+    def Calculate_all_data_dashboard():
         #   # URL of the API + Calculate_all_scores
-        #api_url = URL+"Calculate_all_scores/"
+        api_url = URL+"Calculate_all_datas_values/"
         #
         # Requesting the API and saving the response
-        #response = requests.get(api_url)
+        response = requests.get(api_url)
 
-        #data_clients_std = pd.DataFrame(json.loads(response.content))
-        #data_clients_std_train = pd.DataFrame(json.loads(response.content))
-        #return data_clients_std, data_clients_std_train
+        data_clients_std = pd.DataFrame(json.loads(response.content))
+        data_clients_std_train = pd.DataFrame(json.loads(response.content))
+        return data_clients_std, data_clients_std_train
+
+
 
     @st.cache
     def calculate_data_client_dashboard():
-        # URL of the API + Calculate_all_scores
-        api_url = URL+"calculate_data_client_values/"
+        # URL of the API + calculate_data_client_values + id client
+        api_url = URL+"calculate_data_client_values/?id_client=" + str(id_client)
         # Requesting the API and saving the response
         response = requests.get(api_url)
         data_client = pd.DataFrame(json.loads(response.content))
@@ -118,7 +120,7 @@ def main():
     @st.cache
     def calculate_score_id_client_dashboard():
         # URL of the API + Calculate_all_scores
-        api_url = URL+"calculate_score_id_client_values/"
+        api_url = URL+"calculate_score_id_client_values/?id_client=" + str(id_client)
         # Requesting the API and saving the response
         response = requests.get(api_url)
         score = int(json.loads(response.content))
@@ -128,7 +130,7 @@ def main():
     @st.cache
     def predict_proba_client_dashboard():
         # URL of the API + Calculate_all_scores
-        api_url = URL+"predict_proba_client_values/"
+        api_url = URL+"predict_proba_client_values/?id_client=" + str(id_client)
         # Requesting the API and saving the response
         response = requests.get(api_url)
         proba_client = pd.Series(json.loads(response.content))
@@ -149,7 +151,7 @@ def main():
     @st.cache
     def local_importance_dashboard():
         # URL of the API + Calculate_all_scores
-        api_url = URL+"local_importance_values/"
+        api_url = URL+"local_importance_values/?id_client=" + str(id_client)
         # Requesting the API and saving the response
         response = requests.get(api_url)
         explanation_list = pd.Series(json.loads(response.content['explanation_list']))
@@ -279,7 +281,7 @@ def main():
     df_to_predict = get_df_to_predict_dashboard()
     cols = get_cols_dashboard
     df_drop = get_df_drop_dashboard()
-    #data_clients_std, data_clients_std_train = Calculate_all_data_dashboard()
+    data_clients_std, data_clients_std_train = Calculate_all_data_dashboard()
 
     data_client = calculate_data_client_dashboard()
     score = calculate_score_id_client_dashboard()
@@ -289,12 +291,13 @@ def main():
     if yes_no_feat_glob == 1:
         df_feat_importance = features_importance_global_dashboard()
         plot_feat_importance_values(df_feat_importance)
-    explanation_list, explanation = local_importance_dashboard()
-    final_list = find_loc_feat_importance_dashboard()
-    score_to_score_str(score)
-    plot_proba_client(proba_client)
+
 
     if score != -1:
+        explanation_list, explanation = local_importance_dashboard()
+        final_list = find_loc_feat_importance_dashboard()
+        score_to_score_str(score)
+        plot_proba_client(proba_client)
         local_importance(explanation)
 
         hist_feats_loc(final_list, nb_feats, df_to_predict)
