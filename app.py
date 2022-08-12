@@ -77,8 +77,9 @@ def Calculate_all_scores(df_to_predict, df_drop, model):
     return data_clients_std, data_clients_std_train
 
 
-def calculate_data_client(id_client, df_to_predict, data_clients_std):
+def calculate_data_client(df_to_predict, data_clients_std):
     # Return the data of the chosen client
+    id_client = int(request.args.get('SK_ID_CURR'))
 
     data_client = data_clients_std[df_to_predict.SK_ID_CURR == id_client]
     return data_client
