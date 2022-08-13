@@ -110,8 +110,8 @@ def main():
         api_url = URL+"Calculate_all_datas_values/?id_client=" + str(id_client)
         # Requesting the API and saving the response
         response = requests.get(api_url)
-        data_clients = pd.DataFrame(json.loads(response.content))
-        data_client = data_clients[df_to_predict.SK_ID_CURR == id_client]
+        data_client = pd.DataFrame(json.loads(response.content))
+        #data_client = data_clients[df_to_predict.SK_ID_CURR == id_client]
 
         return data_client
 
@@ -273,13 +273,13 @@ def main():
     nb_feats = nb_feats_side_bar()
     options = multi_choice_neighbours()
     nb_neighbours = nb_neighbours()
+
     # Import datas from Flask
     df = get_df_dashboard()
-
     df_to_predict = get_df_to_predict_dashboard()
     cols = get_cols_dashboard()
     df_drop = get_df_drop_dashboard()
-    data_clients_std, data_clients_std_train = Calculate_all_data_dashboard()
+    data_clients_std = Calculate_all_data_dashboard()
 
     data_client = calculate_data_client_dashboard()
     score = calculate_score_id_client_dashboard()

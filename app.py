@@ -50,7 +50,7 @@ def get_my_explainer():
 def get_train_test() -> object:
     # try:
     path = 'Datas/data_clients.csv'
-    df = pd.read_csv(path).sample(frac=.1)
+    df = pd.read_csv(path)#.sample(frac=.1)
     path = 'Datas/data_clients_to_predict.csv'
     df_to_predict = pd.read_csv(path).sample(frac=.1)
 
@@ -201,17 +201,18 @@ def calculate_data_client_std():
 
     # Return the data of the chosen client
     id_client = int(request.args.get('id_client'))
-    data_client_json = data_clients_std[df_to_predict.SK_ID_CURR == id_client]
+    data_client_json = json.loads(data_clients_std[df_to_predict.SK_ID_CURR == id_client].to_json())
 
     return jsonify(data_client_json)
 
 
-@app.route('/calculate_score_id_client_values')
-def calculate_score_id_client(df_to_predict, data_client):
+@app.route('/calculate_score_id_client_values/')
+def calculate_score_id_client():#df_to_predict, data_clients_std):
     # Return the score of the chosen client. If the client is not in the dtb, return -1
     id_client = int(request.args.get('id_client'))
+    data_client = data_clients_std[df_to_predict.SK_ID_CURR == id_client]
 
-    if len(data_client) > 0:
+    if len(df_to_predict.score[df_to_predict.SK_ID_CURR == id_client]) > 0:
         score = int(df_to_predict.score[df_to_predict.SK_ID_CURR == id_client])
     else:
         score = -1
