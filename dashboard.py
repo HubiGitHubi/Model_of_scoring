@@ -279,7 +279,7 @@ def main():
 
     data_client = calculate_data_client_dashboard()
     score = calculate_score_id_client_dashboard()
-
+    st.write(df_to_predict.SK_ID_CURR)
     st.write(score)
     # Plot the dashboard
     if yes_no_feat_glob == 'Yes':
