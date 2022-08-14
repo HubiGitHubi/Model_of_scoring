@@ -24,7 +24,7 @@ def main():
 
     def yes_no_feat_glob_side_bar():
         yes_no_feat_glob = st.sidebar.selectbox(
-            "Do you want the global features importance ? : ",
+            "Plot the global features importance ? : ",
             ("Yes", "No"))
         return yes_no_feat_glob
 
@@ -46,49 +46,43 @@ def main():
         return options
 
     # ___________ List of api Requests functions
-    # @st.cache
     def get_df_to_predict_dashboard() -> object:
         # URL of the API + get_df_predict_values
         api_url = URL+'get_df_predict_values/'
         # Requesting the API and saving the response
         response = requests.get(api_url)
-        content = json.loads(response.content)
-        st.write(content)
         df_to_predict = pd.DataFrame(json.loads(response.content))
 
         return df_to_predict
 
+    @st.cache
     def get_df_dashboard() -> object:
         # URL of the API + get_df_values
         api_url = URL+'get_df_values/'
         # Requesting the API and saving the response
         response = requests.get(api_url)
         content = json.loads(response.content)
-        st.write(content)
         df = pd.DataFrame(content)
-        st.write(df.SK_ID_CURR)
         return df
 
+    @st.cache
     def get_cols_dashboard() -> object:
         # URL of the API + get_cols_values
         api_url = URL+'get_cols_values/'
 
         # Requesting the API and saving the response
         response = requests.get(api_url)
-        content = json.loads(response.content)
-        st.write(content)
         cols = pd.Series(json.loads(response.content))
 
         return cols
 
+    @st.cache
     def get_df_drop_dashboard() -> object:
         # URL of the API + get_df_drop_values
         api_url = URL+'get_df_drop_values/'
 
         # Requesting the API and saving the response
         response = requests.get(api_url)
-        content = json.loads(response.content)
-        st.write(content)
         df_drop = pd.DataFrame(json.loads(response.content))
 
         return df_drop
@@ -107,18 +101,18 @@ def main():
     @st.cache
     def calculate_data_client_dashboard():
         # URL of the API + calculate_data_client_values + id client
-        api_url = URL+"Calculate_all_datas_values/?id_client=" + str(id_client)
+        api_url = URL+"Calculate_all_datas_values/?id_client="+str(id_client)
         # Requesting the API and saving the response
         response = requests.get(api_url)
         data_client = pd.DataFrame(json.loads(response.content))
-        #data_client = data_clients[df_to_predict.SK_ID_CURR == id_client]
+        # data_client = data_clients[df_to_predict.SK_ID_CURR == id_client]
 
         return data_client
 
     @st.cache
     def calculate_score_id_client_dashboard():
         # URL of the API + Calculate_all_scores
-        api_url = URL+"calculate_score_id_client_values/?id_client=" + str(id_client)
+        api_url = URL+"calculate_score_id_client_values/?id_client="+str(id_client)
         # Requesting the API and saving the response
         response = requests.get(api_url)
         score = int(json.loads(response.content))
@@ -128,7 +122,7 @@ def main():
     @st.cache
     def predict_proba_client_dashboard():
         # URL of the API + Calculate_all_scores
-        api_url = URL+"predict_proba_client_values/?id_client=" + str(id_client)
+        api_url = URL+"predict_proba_client_values/?id_client="+str(id_client)
         # Requesting the API and saving the response
         response = requests.get(api_url)
         proba_client = pd.Series(json.loads(response.content))
@@ -149,7 +143,7 @@ def main():
     @st.cache
     def local_importance_dashboard():
         # URL of the API + Calculate_all_scores
-        api_url = URL+"local_importance_values/?id_client=" + str(id_client)
+        api_url = URL+"local_importance_values/?id_client="+str(id_client)
         # Requesting the API and saving the response
         response = requests.get(api_url)
         explanation_list = pd.Series(json.loads(response.content['explanation_list']))
@@ -189,8 +183,8 @@ def main():
         # Plot the global features importance
         st.write("Global feature importance")
         fig = plt.figure(figsize=(15, 25))
-        df_feat_importance_abs = abs(df_feat_importance).sort_values(ascendinf=False)[15]
-        sns.barplot(data=df_feat_importance_abs.reset_index(), x="feat_importance", y='Features')
+        df_feat_importance_abs = abs(df_feat_importance).sort_values(by='feat_importance', ascending=False).iloc[0:15]
+        sns.barplot(data=df_feat_importance_abs.reset_index(), x="feat_importance", y='index')
         st.write(fig)
 
     def local_importance(explanation):
@@ -270,23 +264,25 @@ def main():
     # Return values from button and settings page
     id_client = id_client_side_bar()
     yes_no_feat_glob = yes_no_feat_glob_side_bar()
+
     nb_feats = nb_feats_side_bar()
     options = multi_choice_neighbours()
+
     nb_neighbours = nb_neighbours()
 
     # Import datas from Flask
     df = get_df_dashboard()
     df_to_predict = get_df_to_predict_dashboard()
-    cols = get_cols_dashboard()
-    df_drop = get_df_drop_dashboard()
-    data_clients_std = Calculate_all_data_dashboard()
+    # cols = get_cols_dashboard()
+    # df_drop = get_df_drop_dashboard()
+    # data_clients_std = Calculate_all_data_dashboard()
 
     data_client = calculate_data_client_dashboard()
     score = calculate_score_id_client_dashboard()
 
-
+    st.write(score)
     # Plot the dashboard
-    if yes_no_feat_glob == 1:
+    if yes_no_feat_glob == 'Yes':
         df_feat_importance = features_importance_global_dashboard()
         plot_feat_importance_values(df_feat_importance)
 
