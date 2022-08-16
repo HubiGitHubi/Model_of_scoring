@@ -13,7 +13,7 @@ from sklearn.neighbors import NearestNeighbors
 
 def main():
     #URL = "http://127.0.0.1:5000/"
-    URL = "https://appiappp.herokuapp.com/"
+    URL = "https://appiappp.herokuapp.com/app/"
 
     # Display the title
     st.title('Loan application scoring dashboard')
