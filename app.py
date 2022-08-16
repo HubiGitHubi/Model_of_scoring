@@ -50,11 +50,11 @@ def get_my_explainer():
 def get_train_test() -> object:
     # try:
     path = 'Datas/data_clients.csv'
-    df = pd.read_csv(path).sample(frac=.3,random_state=42)
+    df = pd.read_csv(path).sample(frac=.3, random_state=42)
     path = 'Datas/data_clients_to_predict.csv'
-    df_to_predict = pd.read_csv(path)#.sample(frac=.1)
+    df_to_predict = pd.read_csv(path)  # .sample(frac=.1)
 
-    df_drop = df.drop(['SK_ID_CURR', 'TARGET'], axis=1).sample(frac=.3,random_state=42)
+    df_drop = df.drop(['SK_ID_CURR', 'TARGET'], axis=1).sample(frac=.3, random_state=42)
     cols = pd.DataFrame(df_drop.columns, columns=['Features'])
     return df, df_drop, cols, df_to_predict
 
@@ -196,7 +196,6 @@ def Calculate_all_datas():
 
 @app.route('/calculate_data_client_values/')
 def calculate_data_client_std():
-
     # Return the data of the chosen client
     id_client = int(request.args.get('id_client'))
     data_client_json = json.loads(df_to_predict[df_to_predict.SK_ID_CURR == id_client].to_json())
@@ -224,7 +223,7 @@ def calculate_score_id_client():
 def predict_proba_client():
     # Return proba of success/failure of a client
     id_client = int(request.args.get('id_client'))
-    data_client = data_clients_std[df_to_predict.SK_ID_CURR == id_client]
+    data_client = data_clients_std[df_to_predict.SK_ID_CURR == id_client].values
     proba_client_json = model.predict_proba(data_client).tolist()[0]
 
     return jsonify(proba_client_json)
@@ -277,6 +276,3 @@ def find_loc_feat_importance():
             a = 1
 
     return jsonify(final_list)
-
-
-
