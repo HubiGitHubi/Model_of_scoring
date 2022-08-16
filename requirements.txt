@@ -6,7 +6,7 @@ imblearn
 dill
 lime~=0.2.0.1
 
-
+gunicorn
 flask
 pandas
 altair~=4.2.0
