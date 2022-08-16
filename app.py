@@ -279,5 +279,4 @@ def find_loc_feat_importance():
     return jsonify(final_list)
 
 
-if __name__ == "__main__":
-    app.run()
+
