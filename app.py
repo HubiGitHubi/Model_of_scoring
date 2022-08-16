@@ -53,9 +53,7 @@ def get_train_test() -> object:
     path = 'Datas/data_clients_to_predict.csv'
     df_to_predict = pd.read_csv(path)  # .sample(frac=.1)
 
-    df_drop = df.drop(['SK_ID_CURR', 'TARGET'], axis=1).sample(frac=.3, random_state=42)
-    cols = pd.DataFrame(df_drop.columns, columns=['Features'])
-    return df, df_drop, cols, df_to_predict
+    return df, df_to_predict
 
 
 def Calculate_all_scores(df_to_predict, df_drop, model):
