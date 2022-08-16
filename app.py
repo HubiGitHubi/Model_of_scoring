@@ -61,11 +61,10 @@ def get_train_test() -> object:
 
 def Calculate_all_scores(df_to_predict, df_drop, model):
     # Calculate score for every client and store it in df
-    data_clients_std_train = pd.DataFrame(StandardScaler().fit(df_drop).transform(df_drop), columns=df_drop.columns)
     data_clients_std = pd.DataFrame(StandardScaler().fit(df_drop).transform(df_to_predict.drop(['SK_ID_CURR'], axis=1)),
                                     columns=df_drop.columns)
     df_to_predict['score'] = model.predict(data_clients_std.values)
-    return data_clients_std, data_clients_std_train
+    return data_clients_std
 
 
 def calculate_score_id_client(id_client, df_to_predict, data_client):
@@ -138,7 +137,7 @@ def find_loc_feat_importance(explanation_list, df_to_predict):
 # Import data, model, explainer
 df, df_drop, cols, df_to_predict = get_train_test()
 model = get_my_model()
-data_clients_std, data_clients_std_train = Calculate_all_scores(df_to_predict, df_drop, model)
+data_clients_std = Calculate_all_scores(df_to_predict, df_drop, model)
 df_feat_importance = features_importance_global(model, cols)
 explainer = get_my_explainer()
 app = Flask(__name__)
@@ -200,7 +199,7 @@ def calculate_data_client_std():
 
     # Return the data of the chosen client
     id_client = int(request.args.get('id_client'))
-    data_client_json = json.loads(data_clients_std[df_to_predict.SK_ID_CURR == id_client].to_json())
+    data_client_json = json.loads(df_to_predict[df_to_predict.SK_ID_CURR == id_client].to_json())
 
     return jsonify(data_client_json)
 
@@ -226,9 +225,8 @@ def predict_proba_client():
     # Return proba of success/failure of a client
     id_client = int(request.args.get('id_client'))
     data_client = data_clients_std[df_to_predict.SK_ID_CURR == id_client]
-    proba_client_json = model.predict_proba(data_client).tolist()
-    print(proba_client_json)
-    print('------')
+    proba_client_json = model.predict_proba(data_client).tolist()[0]
+
     return jsonify(proba_client_json)
 
 
@@ -241,25 +239,30 @@ def features_importance_global():
 
 
 @app.route('/local_importance_values/')
-def local_importance():
+def local_importance_explanation_list():
     id_client = int(request.args.get('id_client'))
+    nb_feats = int(request.args.get('nb_feats'))
     data_client = data_clients_std[df_to_predict.SK_ID_CURR == id_client]
     explanation = explainer.explain_instance(data_client.values.reshape(-1),
                                              model.predict_proba,
                                              num_features=nb_feats)
-    explanation_list = explanation.as_list()
-    explanation_list_json = json.loads(explanation_list.to_json())
-    explanation_json = json.loads(explanation_list.to_json())
-    return jsonify(explanation_list_json, explanation_json)
+    explanation_json = explanation.as_list()
+    return jsonify(explanation_json)
 
 
 @app.route('/find_loc_feat_importance_values/')
-def find_loc_feat_importance(explanation_list, df_to_predict):
+def find_loc_feat_importance():
     # Return the name of most important locale features
+    id_client = int(request.args.get('id_client'))
+    nb_feats = int(request.args.get('nb_feats'))
+    data_client = data_clients_std[df_to_predict.SK_ID_CURR == id_client]
+    explanation = explainer.explain_instance(data_client.values.reshape(-1),
+                                             model.predict_proba,
+                                             num_features=nb_feats).as_list()
     liste = []
     final_list = []
 
-    for i in explanation_list:
+    for i in explanation:
         if ">" in i[0]:
             symbol = '>'
         else:
@@ -272,9 +275,8 @@ def find_loc_feat_importance(explanation_list, df_to_predict):
             final_list.append(i)
         except:
             a = 1
-    final_list_json = json.loads(final_list.to_json())
 
-    return jsonify(final_list_json)
+    return jsonify(final_list)
 
 
 if __name__ == "__main__":

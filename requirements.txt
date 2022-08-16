@@ -1,5 +1,5 @@
 numpy
-scikit-learn ==1.0.2
+scikit-learn
 streamlit
 imblearn
 
@@ -12,4 +12,4 @@ pandas
 altair~=4.2.0
 matplotlib
 requests
-#seaborn
+seaborn

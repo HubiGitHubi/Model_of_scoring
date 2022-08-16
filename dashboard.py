@@ -12,7 +12,9 @@ from sklearn.neighbors import NearestNeighbors
 
 
 def main():
-    URL = "http://127.0.0.1:5000/"
+    #URL = "http://127.0.0.1:5000/"
+    URL = "https://appiappp.herokuapp.com/"
+
     # Display the title
     st.title('Loan application scoring dashboard')
 
@@ -28,6 +30,12 @@ def main():
             ("Yes", "No"))
         return yes_no_feat_glob
 
+    def yes_no_feat_local_side_bar():
+        yes_no_feat_local = st.sidebar.selectbox(
+            "Plot the local features importance ? : ",
+            ("Yes", "No"))
+        return yes_no_feat_local
+
     def nb_feats_side_bar():
         nb_feats = st.sidebar.slider(
             "How many local features do you want ?", 2, 15, step=1)
@@ -35,7 +43,7 @@ def main():
 
     def nb_neighbours():
         nb_neighbours = st.sidebar.slider(
-            "How many local neighbours do you want ?", 10, 20000, step=20)
+            "How many local neighbours do you want ?", 10, 10000, step=20)
         return nb_neighbours
 
     def multi_choice_neighbours():
@@ -55,7 +63,6 @@ def main():
 
         return df_to_predict
 
-    @st.cache
     def get_df_dashboard() -> object:
         # URL of the API + get_df_values
         api_url = URL+'get_df_values/'
@@ -65,51 +72,15 @@ def main():
         df = pd.DataFrame(content)
         return df
 
-    @st.cache
-    def get_cols_dashboard() -> object:
-        # URL of the API + get_cols_values
-        api_url = URL+'get_cols_values/'
-
-        # Requesting the API and saving the response
-        response = requests.get(api_url)
-        cols = pd.Series(json.loads(response.content))
-
-        return cols
-
-    @st.cache
-    def get_df_drop_dashboard() -> object:
-        # URL of the API + get_df_drop_values
-        api_url = URL+'get_df_drop_values/'
-
-        # Requesting the API and saving the response
-        response = requests.get(api_url)
-        df_drop = pd.DataFrame(json.loads(response.content))
-
-        return df_drop
-
-    @st.cache
-    def Calculate_all_data_dashboard():
-        #   # URL of the API + Calculate_all_scores
-        api_url = URL+"Calculate_all_datas_values/"
-        #
-        # Requesting the API and saving the response
-        response = requests.get(api_url)
-
-        data_clients_std = pd.DataFrame(json.loads(response.content))
-        return data_clients_std
-
-    @st.cache
     def calculate_data_client_dashboard():
         # URL of the API + calculate_data_client_values + id client
-        api_url = URL+"Calculate_all_datas_values/?id_client="+str(id_client)
+        api_url = URL+"calculate_data_client_values/?id_client="+str(id_client)
         # Requesting the API and saving the response
         response = requests.get(api_url)
         data_client = pd.DataFrame(json.loads(response.content))
-        # data_client = data_clients[df_to_predict.SK_ID_CURR == id_client]
 
         return data_client
 
-    @st.cache
     def calculate_score_id_client_dashboard():
         # URL of the API + Calculate_all_scores
         api_url = URL+"calculate_score_id_client_values/?id_client="+str(id_client)
@@ -119,7 +90,6 @@ def main():
 
         return score
 
-    @st.cache
     def predict_proba_client_dashboard():
         # URL of the API + Calculate_all_scores
         api_url = URL+"predict_proba_client_values/?id_client="+str(id_client)
@@ -140,21 +110,9 @@ def main():
 
         return df_feat_importance
 
-    @st.cache
-    def local_importance_dashboard():
-        # URL of the API + Calculate_all_scores
-        api_url = URL+"local_importance_values/?id_client="+str(id_client)
-        # Requesting the API and saving the response
-        response = requests.get(api_url)
-        explanation_list = pd.Series(json.loads(response.content['explanation_list']))
-        explanation = pd.DataFrame(json.loads(response.content['explanation']))
-
-        return explanation_list, explanation
-
-    @st.cache
     def find_loc_feat_importance_dashboard():
         # URL of the API + Calculate_all_scores
-        api_url = URL+"find_loc_feat_importance_values/"
+        api_url = URL+"find_loc_feat_importance_values/?id_client="+str(id_client)+"&nb_feats="+str(nb_feats)
         # Requesting the API and saving the response
         response = requests.get(api_url)
         final_list = pd.Series(json.loads(response.content))
@@ -168,16 +126,15 @@ def main():
             st.success("accepted")
         elif score == 1:
             st.error("refused")
-        else:
-            st.warning("This client's not in the database")
 
     # ____________________ List of drawing functions
+
     def plot_proba_client(proba_client):
         # Plot the proba client
         st.write("Repayment rate")
-        st.success(round(proba_client[0][0], 2))
+        st.success(round(proba_client[0], 2))
         st.write("Default rate")
-        st.error(round(proba_client[0][1], 2))
+        st.error(round(proba_client[1], 2))
 
     def plot_feat_importance_values(df_feat_importance):
         # Plot the global features importance
@@ -187,13 +144,9 @@ def main():
         sns.barplot(data=df_feat_importance_abs.reset_index(), x="feat_importance", y='index')
         st.write(fig)
 
-    def local_importance(explanation):
-        with plt.style.context("ggplot"):
-            st.pyplot(explanation.as_pyplot_figure())
-
-    def hist_feats_loc(final_list, nb_feats, df_to_predict):
+    def hist_feats_loc(final_list, nb_feats, df_to_predict, data_client):
         # Plot the number of chosen local most important feats
-
+        st.write("Locals feature importance")
         _ = math.ceil(math.sqrt(len(final_list)))
         if nb_feats//_ == nb_feats/_:
             nb_cols = nb_feats//_
@@ -205,21 +158,28 @@ def main():
         for i, _c in enumerate(final_list):
             ax = axs.flat[i]
             ax.hist(df_to_predict[[_c]], bins=20)
+            ax.axvline(data_client[_c][0], color='red')
+
             ax.set_title(_c)
             fig.set_tight_layout(True)
         st.pyplot(fig)
 
-    # find 20 nearest neighbors among the training set
-    # find 20 nearest neighbors among the training set
+    # find nearest neighbors among the training set
 
     def Calculate_neighbourhood(df, nb_neighbours, final_list, data_client):
+        df_all = df
         # return the closest neighbors final feats list (nb_neighbours chosen by the user)
-        neighbors = NearestNeighbors(n_neighbors=nb_neighbours).fit(df.drop(['SK_ID_CURR', 'TARGET'], axis=1))
+        neighbors = NearestNeighbors(n_neighbors=nb_neighbours).fit(df_all.drop(['SK_ID_CURR', 'TARGET'], axis=1))
 
-        index_neighbors = neighbors.kneighbors(X=data_client.drop(['SK_ID_CURR', 'score'], axis=1).values,
-                                               n_neighbors=nb_neighbours, return_distance=False).ravel()
+        index_neighbors = list(neighbors.kneighbors(X=data_client.drop(['SK_ID_CURR', 'score'], axis=1).values,
+                                                    n_neighbors=nb_neighbours, return_distance=False).ravel())
 
-        neighbors = df.loc[index_neighbors, final_list]
+        neighbors = []
+        df_all.index = df_all.SK_ID_CURR
+        for i in index_neighbors:
+            neighbors.append(df_all.iloc[i, :])
+        neighbors = pd.DataFrame(neighbors, columns=df_all.columns)
+        neighbors = neighbors.loc[:, final_list]
         return neighbors
 
     def Calculate_neighbourhood_positive(df, nb_neighbours, final_list, data_client):
@@ -227,9 +187,16 @@ def main():
 
         # return the closest neighbors final feats list (nb_neighbours chosen by the user)
         neighbors_pos = NearestNeighbors(n_neighbors=nb_neighbours).fit(df_pos.drop(['SK_ID_CURR', 'TARGET'], axis=1))
-        index_neighbors = neighbors_pos.kneighbors(X=data_client.drop(['SK_ID_CURR', 'score'], axis=1),
-                                                   n_neighbors=nb_neighbours).ravel()
-        neighbors_pos = df_pos.loc[index_neighbors, final_list]
+
+        index_neighbors = list(neighbors_pos.kneighbors(X=data_client.drop(['SK_ID_CURR', 'score'], axis=1),
+                                                        n_neighbors=nb_neighbours, return_distance=False).ravel())
+        neighbors_pos = []
+        df_pos.index = df_pos.SK_ID_CURR
+        for i in index_neighbors:
+            neighbors_pos.append(df_pos.iloc[i, :])
+        neighbors_pos = pd.DataFrame(neighbors_pos, columns=df_pos.columns)
+        neighbors_pos = neighbors_pos.loc[:, final_list]
+
         return neighbors_pos
 
     def Calculate_neighbourhood_negative(df, nb_neighbours, final_list, data_client):
@@ -237,12 +204,19 @@ def main():
 
         # return the closest neighbors final feats list (nb_neighbours chosen by the user)
         neighbors_neg = NearestNeighbors(n_neighbors=nb_neighbours).fit(df_neg.drop(['SK_ID_CURR', 'TARGET'], axis=1))
-        index_neighbors = neighbors_neg.kneighbors(X=data_client.drop(['SK_ID_CURR', 'score'], axis=1),
-                                                   n_neighbors=nb_neighbours).ravel()
-        neighbors_neg = df_neg.loc[index_neighbors, final_list]
+
+        index_neighbors = list(neighbors_neg.kneighbors(X=data_client.drop(['SK_ID_CURR', 'score'], axis=1),
+                                                        n_neighbors=nb_neighbours, return_distance=False).ravel())
+        neighbors_neg = []
+        df_neg.index = df_neg.SK_ID_CURR
+        for i in index_neighbors:
+            neighbors_neg.append(df_neg.iloc[i, :])
+        neighbors_neg = pd.DataFrame(neighbors_neg, columns=df_neg.columns)
+        neighbors_neg = neighbors_neg.loc[:, final_list]
+
         return neighbors_neg
 
-    def plot_neigh(neighbors, final_list, nb_feats):
+    def plot_neigh(neighbors, final_list, nb_feats, data_client):
         # Plot local most important feats for the number of chosen neighbours
 
         _ = math.ceil(math.sqrt(len(final_list)))
@@ -255,6 +229,7 @@ def main():
 
         for i, _c in enumerate(final_list):
             ax = axs.flat[i]
+            ax.axvline(data_client[_c][0], color='red')
             ax.hist(neighbors[[_c]], bins=20)
             ax.set_title(_c)
             fig.set_tight_layout(True)
@@ -264,52 +239,48 @@ def main():
     # Return values from button and settings page
     id_client = id_client_side_bar()
     yes_no_feat_glob = yes_no_feat_glob_side_bar()
-
+    yes_no_feat_local = yes_no_feat_local_side_bar()
     nb_feats = nb_feats_side_bar()
     options = multi_choice_neighbours()
-
     nb_neighbours = nb_neighbours()
 
     # Import datas from Flask
     df = get_df_dashboard()
-    df_to_predict = get_df_to_predict_dashboard()
-    # cols = get_cols_dashboard()
-    # df_drop = get_df_drop_dashboard()
-    # data_clients_std = Calculate_all_data_dashboard()
 
+    df_to_predict = get_df_to_predict_dashboard()
     data_client = calculate_data_client_dashboard()
     score = calculate_score_id_client_dashboard()
-    st.write("0", 100001)
-    st.write("1", 100005)
 
     # Plot the dashboard
-    if yes_no_feat_glob == 'Yes':
-        df_feat_importance = features_importance_global_dashboard()
-        plot_feat_importance_values(df_feat_importance)
 
     if score != -1:
 
         proba_client = predict_proba_client_dashboard()
-        st.write(proba_client)
-        explanation_list, explanation = local_importance_dashboard()
-        final_list = find_loc_feat_importance_dashboard()
         score_to_score_str(score)
         plot_proba_client(proba_client)
-        local_importance(explanation)
 
-        hist_feats_loc(final_list, nb_feats, df_to_predict)
+        if yes_no_feat_glob == 'Yes':
+            df_feat_importance = features_importance_global_dashboard()
+            plot_feat_importance_values(df_feat_importance)
+
+        final_list = find_loc_feat_importance_dashboard()
+        if yes_no_feat_local == 'Yes':
+            hist_feats_loc(final_list, nb_feats, df_to_predict, data_client)
 
         if 'all clients mixed (1&0)' in options:
+            st.write("all clients mixed (1&0) neighbours")
             neighbors = Calculate_neighbourhood(df, nb_neighbours, final_list, data_client)
-            plot_neigh(neighbors, final_list, nb_feats)
+            plot_neigh(neighbors, final_list, nb_feats, data_client)
 
         if 'Positive clients (1)' in options:
+            st.write("Positive clients (1) neighbours")
             neighbors_pos = Calculate_neighbourhood_positive(df, nb_neighbours, final_list, data_client)
-            plot_neigh(neighbors_pos, final_list, nb_feats)
+            plot_neigh(neighbors_pos, final_list, nb_feats, data_client)
 
         if 'Negatives clients (0)' in options:
+            st.write("Negatives clients (0) neighbours")
             neighbors_neg = Calculate_neighbourhood_negative(df, nb_neighbours, final_list, data_client)
-            plot_neigh(neighbors_neg, final_list, nb_feats)
+            plot_neigh(neighbors_neg, final_list, nb_feats, data_client)
     else:
         st.warning("This client's not in the database")
 
