@@ -206,12 +206,14 @@ def calculate_data_client_std():
 
 
 @app.route('/calculate_score_id_client_values/')
-def calculate_score_id_client():#df_to_predict, data_clients_std):
+def calculate_score_id_client():
     # Return the score of the chosen client. If the client is not in the dtb, return -1
     id_client = int(request.args.get('id_client'))
+    st.write(df_to_predict.score[df_to_predict.SK_ID_CURR == id_client])
 
-    if len(df_to_predict.score[df_to_predict.SK_ID_CURR == id_client]) > 0:
+    if len(df_to_predict[df_to_predict.SK_ID_CURR == id_client]) > 0:
         score = int(df_to_predict.score[df_to_predict.SK_ID_CURR == id_client])
+        st.write('score with len min1', score)
     else:
         score = -1
     score_json = score
@@ -220,16 +222,18 @@ def calculate_score_id_client():#df_to_predict, data_clients_std):
 
 
 @app.route('/predict_proba_client_values/')
-def predict_proba_client():#data_client, model):
+def predict_proba_client():
     # Return proba of success/failure of a client
     id_client = int(request.args.get('id_client'))
-    data_client = data_clients_std[df_to_predict.SK_ID_CURR == id_client].values
-    proba_client_json = list(model.predict_proba(data_client))
+    data_client = data_clients_std[df_to_predict.SK_ID_CURR == id_client]
+    proba_client_json = model.predict_proba(data_client).tolist()
+    print(proba_client_json)
+    print('------')
     return jsonify(proba_client_json)
 
 
 @app.route('/features_importance_global_values/')
-def features_importance_global():#df_feat_importance):
+def features_importance_global():
     # Calculate the global features importance
     df_feat_importance_json = json.loads(df_feat_importance.to_json())
 
@@ -237,7 +241,7 @@ def features_importance_global():#df_feat_importance):
 
 
 @app.route('/local_importance_values/')
-def local_importance():#model, data_client, explainer, nb_feats):
+def local_importance():
     id_client = int(request.args.get('id_client'))
     data_client = data_clients_std[df_to_predict.SK_ID_CURR == id_client]
     explanation = explainer.explain_instance(data_client.values.reshape(-1),

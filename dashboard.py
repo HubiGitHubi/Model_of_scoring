@@ -125,7 +125,7 @@ def main():
         api_url = URL+"predict_proba_client_values/?id_client="+str(id_client)
         # Requesting the API and saving the response
         response = requests.get(api_url)
-        proba_client = pd.Series(json.loads(response.content))
+        proba_client = json.loads(response.content)
 
         return proba_client
 
@@ -279,8 +279,9 @@ def main():
 
     data_client = calculate_data_client_dashboard()
     score = calculate_score_id_client_dashboard()
-    st.write(df_to_predict.SK_ID_CURR)
-    st.write(score)
+    st.write("0", 100001)
+    st.write("1", 100005)
+
     # Plot the dashboard
     if yes_no_feat_glob == 'Yes':
         df_feat_importance = features_importance_global_dashboard()
@@ -289,6 +290,7 @@ def main():
     if score != -1:
 
         proba_client = predict_proba_client_dashboard()
+        st.write(proba_client)
         explanation_list, explanation = local_importance_dashboard()
         final_list = find_loc_feat_importance_dashboard()
         score_to_score_str(score)
@@ -308,6 +310,8 @@ def main():
         if 'Negatives clients (0)' in options:
             neighbors_neg = Calculate_neighbourhood_negative(df, nb_neighbours, final_list, data_client)
             plot_neigh(neighbors_neg, final_list, nb_feats)
+    else:
+        st.warning("This client's not in the database")
 
 
 if __name__ == "__main__":
