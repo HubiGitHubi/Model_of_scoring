@@ -1,6 +1,5 @@
 import json
 import math
-import gunicorn
 import requests
 import pandas as pd
 import streamlit as st
