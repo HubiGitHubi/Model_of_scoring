@@ -11,7 +11,7 @@ from sklearn.neighbors import NearestNeighbors
 
 
 def main():
-    URL = "http://127.0.0.1:5000/app/"
+    URL = "http://127.0.0.1:5000/"
     #URL = "https://vast-falls-81708.herokuapp.com/app/"
 
     # Display the title
@@ -131,9 +131,9 @@ def main():
     def plot_proba_client(proba_client):
         # Plot the proba client
         st.write("Repayment rate")
-        st.success(round(proba_client[0], 2))
+        st.success(str(round(proba_client[0], 2))+'%')
         st.write("Default rate")
-        st.error(round(proba_client[1], 2))
+        st.error(str(round(proba_client[1], 2))+'%')
 
     def plot_feat_importance_values(df_feat_importance):
         # Plot the global features importance
