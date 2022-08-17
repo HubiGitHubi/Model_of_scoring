@@ -26,29 +26,23 @@ def get_my_model() -> object:
     # my_model = pickle.load(f1)
     # return my_model
 
-    try:
-        with open('Datas/best_model', 'rb') as f1:
-            my_model = pickle.load(f1)
-    except:
-        with open('Datas/best_model', 'rb') as f1:
-            my_model = pickle.load(f1)
+    with open('Datas/best_model', 'rb') as f1:
+        my_model = pickle.load(f1)
+
     return my_model
 
 
 def get_my_explainer():
     # Charge the explainer'
-    try:
-        with open('Datas/explainer', 'rb') as f:
-            explainer = pickle.load(f, errors="ignore")
-    except:
-        with open('Datas/explainer', 'rb') as f:
-            explainer = pickle.load(f, errors="ignore")
+
+    with open('Datas/explainer', 'rb') as f:
+        explainer = pickle.load(f, errors="ignore")
+
     return explainer
 
 
 def get_train_test() -> object:
-    # try:
-    path = 'Datas/data_clients.csv'
+    path = 'Datas/data_clients_sampled.csv'
     df = pd.read_csv(path).sample(frac=.3, random_state=42)
     path = 'Datas/data_clients_to_predict.csv'
     df_to_predict = pd.read_csv(path)  # .sample(frac=.1)
