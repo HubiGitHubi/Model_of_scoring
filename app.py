@@ -37,9 +37,9 @@ def get_my_explainer():
 
 def get_train_test() -> object:
     path = 'Datas/data_clients_sampled.csv'
-    df = pd.read_csv(path)
+    df = pd.read_csv(path).sample(frac=.5,random_state=42)
     path = 'Datas/data_clients_to_predict.csv'
-    df_to_predict = pd.read_csv(path)
+    df_to_predict = pd.read_csv(path.sample(frac=.5,random_state=42))
 
     return df, df_to_predict
 
