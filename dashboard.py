@@ -13,7 +13,7 @@ from sklearn.preprocessing import StandardScaler
 
 def main():
     URL = "http://127.0.0.1:5000/"
-    URL = "https://happyhappyapy.herokuapp.com/app"
+    URL = "https://happyhappyapy.herokuapp.com/"
     # Display the title
     st.title('Loan application scoring dashboard')
 
