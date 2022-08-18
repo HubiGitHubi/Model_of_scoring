@@ -13,7 +13,7 @@ from sklearn.preprocessing import StandardScaler
 
 def main():
     URL = "http://127.0.0.1:5000/"
-    #URL = "https://vast-falls-81708.herokuapp.com/app/"
+    # URL = "https://vast-falls-81708.herokuapp.com/app/"
 
     # Display the title
     st.title('Loan application scoring dashboard')
@@ -81,7 +81,6 @@ def main():
 
         return data_client
 
-
     def calculate_score_id_client_dashboard():
         # URL of the API + Calculate_all_scores
         api_url = URL+"calculate_score_id_client_values/?id_client="+str(id_client)
@@ -118,15 +117,6 @@ def main():
         final_list = pd.Series(json.loads(response.content))
 
         return final_list
-
-    def Calculate_neighbourhood_dashboard():
-        # URL of the API + Calculate_all_scores
-        api_url = URL+"Calculate_neighbourhood_values/?id_client="+str(id_client)+"&nb_neighbours="+str(nb_neighbours)
-        # Requesting the API and saving the response
-        response = requests.get(api_url)
-        neighbors = pd.Series(json.loads(response.content))
-
-        return neighbors
 
     def score_to_score_str(score):
         # markdown the status with color : green: accepted, red: refused, yellow : not in the db
@@ -176,14 +166,11 @@ def main():
     # find nearest neighbors among the training set
 
     def Calculate_neighbourhood(df, nb_neighbours, final_list, data_client):
-        df_all = df
-        df_all_std = pd.DataFrame(StandardScaler().fit_transform(
-            df_all.drop(['SK_ID_CURR', 'TARGET'], axis=1)),
-            columns=df_all.drop(['SK_ID_CURR', 'TARGET'], axis=1).columns)
+        df_all = df[final_list]
+        df_all_std = pd.DataFrame(StandardScaler().fit_transform(df_all), columns=df_all.columns)
 
-        data_client_std = pd.DataFrame(StandardScaler().fit(df.drop(['SK_ID_CURR', 'TARGET'], axis=1)).transform(
-            data_client.drop(['SK_ID_CURR', 'score'], axis=1)),
-            columns=df_all.drop(['SK_ID_CURR', 'TARGET'], axis=1).columns)
+        data_client_std = pd.DataFrame(StandardScaler().fit(df_all_std).transform(
+            data_client[final_list]), columns=final_list)
 
         # return the closest neighbors final feats list (nb_neighbours chosen by the user)
         neighbors = NearestNeighbors(n_neighbors=nb_neighbours).fit(df_all_std)
@@ -192,23 +179,31 @@ def main():
                                                     n_neighbors=nb_neighbours, return_distance=False).ravel())
 
         neighbors = []
-        df_all.index = df_all.SK_ID_CURR
+        df_all.index = df.SK_ID_CURR
         for i in index_neighbors:
             neighbors.append(df_all.iloc[i, :])
-        neighbors = pd.DataFrame(neighbors, columns=df_all.columns)
-        neighbors = neighbors.loc[:, final_list]
+        neighbors = pd.DataFrame(neighbors, columns=final_list)
         return neighbors
 
     def Calculate_neighbourhood_positive(df, nb_neighbours, final_list, data_client):
-        df_pos = df[df["TARGET"] == 1]
+        df_pos_ext = df[df["TARGET"] == 1]
+        df_pos = df_pos_ext[final_list]
+        df_pos_std = pd.DataFrame(StandardScaler().fit_transform(df_pos), columns=df_pos.columns)
+
+        data_client_std = pd.DataFrame(StandardScaler().fit(df_pos_std).transform(
+            data_client[final_list]), columns=final_list)
 
         # return the closest neighbors final feats list (nb_neighbours chosen by the user)
-        neighbors_pos = NearestNeighbors(n_neighbors=nb_neighbours).fit(df_pos.drop(['SK_ID_CURR', 'TARGET'], axis=1))
+        if nb_neighbours > len(df_pos):
+            st.write('(max positives neighbours :', len(df_pos), ')')
+            nb_neighbours = len(df_pos)
 
-        index_neighbors = list(neighbors_pos.kneighbors(X=data_client.drop(['SK_ID_CURR', 'score'], axis=1),
+        neighbors_pos = NearestNeighbors(n_neighbors=nb_neighbours).fit(df_pos_std)
+
+        index_neighbors = list(neighbors_pos.kneighbors(X=data_client_std,
                                                         n_neighbors=nb_neighbours, return_distance=False).ravel())
         neighbors_pos = []
-        df_pos.index = df_pos.SK_ID_CURR
+        df_pos.index = df_pos_ext.SK_ID_CURR
         for i in index_neighbors:
             neighbors_pos.append(df_pos.iloc[i, :])
         neighbors_pos = pd.DataFrame(neighbors_pos, columns=df_pos.columns)
@@ -216,15 +211,24 @@ def main():
         return neighbors_pos
 
     def Calculate_neighbourhood_negative(df, nb_neighbours, final_list, data_client):
-        df_neg = df[df["TARGET"] == 0]
+        df_neg_ext = df[df["TARGET"] == 0]
+        df_neg = df_neg_ext[final_list]
+        df_neg_std = pd.DataFrame(StandardScaler().fit_transform(df_neg), columns=df_neg.columns)
+
+        data_client_std = pd.DataFrame(StandardScaler().fit(df_neg_std).transform(
+            data_client[final_list]), columns=final_list)
 
         # return the closest neighbors final feats list (nb_neighbours chosen by the user)
-        neighbors_neg = NearestNeighbors(n_neighbors=nb_neighbours).fit(df_neg.drop(['SK_ID_CURR', 'TARGET'], axis=1))
+        if nb_neighbours > len(df_neg):
+            st.write('(max negatives neighbours :', len(df_neg), ')')
+            nb_neighbours = len(df_neg)
 
-        index_neighbors = list(neighbors_neg.kneighbors(X=data_client.drop(['SK_ID_CURR', 'score'], axis=1),
+        neighbors_neg = NearestNeighbors(n_neighbors=nb_neighbours).fit(df_neg_std)
+
+        index_neighbors = list(neighbors_neg.kneighbors(X=data_client_std,
                                                         n_neighbors=nb_neighbours, return_distance=False).ravel())
         neighbors_neg = []
-        df_neg.index = df_neg.SK_ID_CURR
+        df_neg.index = df_neg_ext.SK_ID_CURR
         for i in index_neighbors:
             neighbors_neg.append(df_neg.iloc[i, :])
         neighbors_neg = pd.DataFrame(neighbors_neg, columns=df_neg.columns)
@@ -235,13 +239,14 @@ def main():
     def plot_neigh(neighbors, final_list, nb_feats, data_client):
         # Plot local most important feats for the number of chosen neighbours
 
-        _ = math.ceil(math.sqrt(len(final_list)))
-        if nb_feats//_ == nb_feats/_:
-            nb_cols = nb_feats//_
-        else:
-            nb_cols = nb_feats//_+1
+        nb_cols = 2
 
-        fig, axs = plt.subplots(_, nb_cols, sharey=True)
+        if nb_feats//nb_cols == nb_feats/nb_cols:
+            nb_lignes = nb_feats//nb_cols
+        else:
+            nb_lignes = nb_feats//nb_cols+1
+
+        fig, axs = plt.subplots(nb_lignes, nb_cols, sharey=True)
 
         for i, _c in enumerate(final_list):
             ax = axs.flat[i]
@@ -284,18 +289,17 @@ def main():
             hist_feats_loc(final_list, nb_feats, df_to_predict, data_client)
 
         if 'all clients mixed (1&0)' in options:
-            st.write("all clients mixed (1&0) neighbours")
-            #neighbors = Calculate_neighbourhood_dashboard()
+            st.write("all clients mixed (1&0) neighbours :")
             neighbors = Calculate_neighbourhood(df, nb_neighbours, final_list, data_client)
             plot_neigh(neighbors, final_list, nb_feats, data_client)
 
         if 'Positive clients (1)' in options:
-            st.write("Positive clients (1) neighbours")
+            st.write("Positive clients (1) neighbours :")
             neighbors_pos = Calculate_neighbourhood_positive(df, nb_neighbours, final_list, data_client)
             plot_neigh(neighbors_pos, final_list, nb_feats, data_client)
 
         if 'Negatives clients (0)' in options:
-            st.write("Negatives clients (0) neighbours")
+            st.write("Negatives clients (0) neighbours :")
             neighbors_neg = Calculate_neighbourhood_negative(df, nb_neighbours, final_list, data_client)
             plot_neigh(neighbors_neg, final_list, nb_feats, data_client)
     else:

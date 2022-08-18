@@ -239,54 +239,5 @@ def find_loc_feat_importance():
     return jsonify(final_list)
 
 
-@app.route('/Calculate_neighbourhood_values/')
-def Calculate_neighbourhood():
-    id_client = int(request.args.get('id_client'))
-    nb_neighbours = int(request.args.get('nb_neighbours'))
-
-    data_client = data_clients_std[df_to_predict.SK_ID_CURR == id_client]
-
-    df_all = df
-    df_all_std = pd.DataFrame(StandardScaler().fit(df.drop(['SK_ID_CURR', 'TARGET'], axis=1)).transform(
-        df_all.drop(['SK_ID_CURR', 'TARGET'], axis=1)),
-        columns=df_all.drop(['SK_ID_CURR', 'TARGET'], axis=1).columns)
-
-    data_client_std = pd.DataFrame(StandardScaler().fit(df.drop(['SK_ID_CURR', 'TARGET'], axis=1)).transform(
-        data_client),
-        columns=df_all.drop(['SK_ID_CURR', 'TARGET'], axis=1).columns)
-
-    # return the closest neighbors final feats list (nb_neighbours chosen by the user)
-    neighbors = NearestNeighbors(n_neighbors=nb_neighbours).fit(df_all_std)
-
-    index_neighbors = list(neighbors.kneighbors(X=data_client_std,
-                                                n_neighbors=nb_neighbours, return_distance=False).ravel())
-
-    neighbors = []
-    df_all.index = df_all.SK_ID_CURR
-    for i in index_neighbors:
-        neighbors.append(df_all.iloc[i, :])
-    neighbors = pd.DataFrame(neighbors, columns=df_all.columns)
-
-    return jsonify(json.loads(neighbors.to_json()))
-
-
-def Calculate_neighbourhood_positive_app(df, nb_neighbours, final_list, data_client):
-    df_pos = df[df["TARGET"] == 1]
-
-    # return the closest neighbors final feats list (nb_neighbours chosen by the user)
-    neighbors_pos = NearestNeighbors(n_neighbors=nb_neighbours).fit(df_pos.drop(['SK_ID_CURR', 'TARGET'], axis=1))
-
-    index_neighbors = list(neighbors_pos.kneighbors(X=data_client.drop(['SK_ID_CURR', 'score'], axis=1),
-                                                    n_neighbors=nb_neighbours, return_distance=False).ravel())
-    neighbors_pos = []
-    df_pos.index = df_pos.SK_ID_CURR
-    for i in index_neighbors:
-        neighbors_pos.append(df_pos.iloc[i, :])
-    neighbors_pos = pd.DataFrame(neighbors_pos, columns=df_pos.columns)
-    neighbors_pos = neighbors_pos.loc[:, final_list]
-
-    return neighbors_pos
-
-
 if __name__ == "__main__":
     app.run()
