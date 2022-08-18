@@ -80,14 +80,7 @@ def main():
         data_client = pd.DataFrame(json.loads(response.content))
 
         return data_client
-    def calculate_data_client_dashboard():
-        # URL of the API + calculate_data_client_values + id client
-        api_url = URL+"Calculate_all_datas_values/"
-        # Requesting the API and saving the response
-        response = requests.get(api_url)
-        data_clients_std = pd.DataFrame(json.loads(response.content))
 
-        return data_clients_std
 
     def calculate_score_id_client_dashboard():
         # URL of the API + Calculate_all_scores
@@ -107,7 +100,6 @@ def main():
 
         return proba_client
 
-    @st.cache
     def features_importance_global_dashboard():
         # URL of the API + Calculate_all_scores
         api_url = URL+"features_importance_global_values/"
@@ -185,12 +177,12 @@ def main():
 
     def Calculate_neighbourhood(df, nb_neighbours, final_list, data_client):
         df_all = df
-        df_all_std = pd.DataFrame(StandardScaler().fit(df.drop(['SK_ID_CURR', 'TARGET'], axis=1)).transform(
+        df_all_std = pd.DataFrame(StandardScaler().fit_transform(
             df_all.drop(['SK_ID_CURR', 'TARGET'], axis=1)),
             columns=df_all.drop(['SK_ID_CURR', 'TARGET'], axis=1).columns)
 
         data_client_std = pd.DataFrame(StandardScaler().fit(df.drop(['SK_ID_CURR', 'TARGET'], axis=1)).transform(
-            data_client),
+            data_client.drop(['SK_ID_CURR', 'score'], axis=1)),
             columns=df_all.drop(['SK_ID_CURR', 'TARGET'], axis=1).columns)
 
         # return the closest neighbors final feats list (nb_neighbours chosen by the user)
@@ -293,8 +285,8 @@ def main():
 
         if 'all clients mixed (1&0)' in options:
             st.write("all clients mixed (1&0) neighbours")
-            neighbors = Calculate_neighbourhood_dashboard()
-                #Calculate_neighbourhood(df, nb_neighbours, final_list, data_client)
+            #neighbors = Calculate_neighbourhood_dashboard()
+            neighbors = Calculate_neighbourhood(df, nb_neighbours, final_list, data_client)
             plot_neigh(neighbors, final_list, nb_feats, data_client)
 
         if 'Positive clients (1)' in options:
@@ -307,7 +299,8 @@ def main():
             neighbors_neg = Calculate_neighbourhood_negative(df, nb_neighbours, final_list, data_client)
             plot_neigh(neighbors_neg, final_list, nb_feats, data_client)
     else:
-        st.warning("This client's not in the database")
+        st.warning("This client's not in the database, here is the list of clients")
+        st.write(df_to_predict.SK_ID_CURR)
 
 
 if __name__ == "__main__":

@@ -267,7 +267,7 @@ def Calculate_neighbourhood():
         neighbors.append(df_all.iloc[i, :])
     neighbors = pd.DataFrame(neighbors, columns=df_all.columns)
 
-    return jsonify(neighbors)
+    return jsonify(json.loads(neighbors.to_json()))
 
 
 def Calculate_neighbourhood_positive_app(df, nb_neighbours, final_list, data_client):
