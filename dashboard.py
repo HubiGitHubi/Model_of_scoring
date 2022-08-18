@@ -5,14 +5,12 @@ import pandas as pd
 import streamlit as st
 import seaborn as sns
 import matplotlib.pyplot as plt
-
-# main function
 from sklearn.neighbors import NearestNeighbors
 from sklearn.preprocessing import StandardScaler
 
 
 def main():
-    URL = "http://127.0.0.1:5000/"
+    #URL = "http://127.0.0.1:5000/"
     URL = "https://happyhappyapy.herokuapp.com/"
     # Display the title
     st.title('Loan application scoring dashboard')

@@ -3,16 +3,11 @@ import dill
 import numpy as np
 import streamlit as st
 from matplotlib import pyplot as plt
-from sklearn.neighbors import NearestNeighbors
 from sklearn.preprocessing import StandardScaler
 import pickle
 import pandas as pd
 from flask import jsonify, Flask, request
 
-'''
-cd  C:/Users/33646/Documents/OpenClassroom/'Projet 7'/Model_of_scoring
-$env:FLASK_APP = "app"
-flask run'''
 
 
 # Network URL: http: // 192.168.1.27:8501
@@ -37,9 +32,9 @@ def get_my_explainer():
 
 def get_train_test() -> object:
     path = 'Datas/data_clients_sampled.csv'
-    df = pd.read_csv(path).sample(frac=.5,random_state=42)
+    df = pd.read_csv(path)
     path = 'Datas/data_clients_to_predict.csv'
-    df_to_predict = pd.read_csv(path.sample(frac=.5,random_state=42))
+    df_to_predict = pd.read_csv(path)
 
     return df, df_to_predict
 
