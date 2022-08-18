@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 
 # main function
 from sklearn.neighbors import NearestNeighbors
+from sklearn.preprocessing import StandardScaler
 
 
 def main():
@@ -79,6 +80,14 @@ def main():
         data_client = pd.DataFrame(json.loads(response.content))
 
         return data_client
+    def calculate_data_client_dashboard():
+        # URL of the API + calculate_data_client_values + id client
+        api_url = URL+"Calculate_all_datas_values/"
+        # Requesting the API and saving the response
+        response = requests.get(api_url)
+        data_clients_std = pd.DataFrame(json.loads(response.content))
+
+        return data_clients_std
 
     def calculate_score_id_client_dashboard():
         # URL of the API + Calculate_all_scores
@@ -117,6 +126,15 @@ def main():
         final_list = pd.Series(json.loads(response.content))
 
         return final_list
+
+    def Calculate_neighbourhood_dashboard():
+        # URL of the API + Calculate_all_scores
+        api_url = URL+"Calculate_neighbourhood_values/?id_client="+str(id_client)+"&nb_neighbours="+str(nb_neighbours)
+        # Requesting the API and saving the response
+        response = requests.get(api_url)
+        neighbors = pd.Series(json.loads(response.content))
+
+        return neighbors
 
     def score_to_score_str(score):
         # markdown the status with color : green: accepted, red: refused, yellow : not in the db
@@ -167,10 +185,18 @@ def main():
 
     def Calculate_neighbourhood(df, nb_neighbours, final_list, data_client):
         df_all = df
-        # return the closest neighbors final feats list (nb_neighbours chosen by the user)
-        neighbors = NearestNeighbors(n_neighbors=nb_neighbours).fit(df_all.drop(['SK_ID_CURR', 'TARGET'], axis=1))
+        df_all_std = pd.DataFrame(StandardScaler().fit(df.drop(['SK_ID_CURR', 'TARGET'], axis=1)).transform(
+            df_all.drop(['SK_ID_CURR', 'TARGET'], axis=1)),
+            columns=df_all.drop(['SK_ID_CURR', 'TARGET'], axis=1).columns)
 
-        index_neighbors = list(neighbors.kneighbors(X=data_client.drop(['SK_ID_CURR', 'score'], axis=1).values,
+        data_client_std = pd.DataFrame(StandardScaler().fit(df.drop(['SK_ID_CURR', 'TARGET'], axis=1)).transform(
+            data_client),
+            columns=df_all.drop(['SK_ID_CURR', 'TARGET'], axis=1).columns)
+
+        # return the closest neighbors final feats list (nb_neighbours chosen by the user)
+        neighbors = NearestNeighbors(n_neighbors=nb_neighbours).fit(df_all_std)
+
+        index_neighbors = list(neighbors.kneighbors(X=data_client_std,
                                                     n_neighbors=nb_neighbours, return_distance=False).ravel())
 
         neighbors = []
@@ -194,7 +220,6 @@ def main():
         for i in index_neighbors:
             neighbors_pos.append(df_pos.iloc[i, :])
         neighbors_pos = pd.DataFrame(neighbors_pos, columns=df_pos.columns)
-        neighbors_pos = neighbors_pos.loc[:, final_list]
 
         return neighbors_pos
 
@@ -229,7 +254,7 @@ def main():
         for i, _c in enumerate(final_list):
             ax = axs.flat[i]
             ax.axvline(data_client[_c][0], color='red')
-            ax.hist(neighbors[[_c]], bins=20)
+            ax.hist(neighbors[[_c]])
             ax.set_title(_c)
             fig.set_tight_layout(True)
         st.pyplot(fig)
@@ -268,7 +293,8 @@ def main():
 
         if 'all clients mixed (1&0)' in options:
             st.write("all clients mixed (1&0) neighbours")
-            neighbors = Calculate_neighbourhood(df, nb_neighbours, final_list, data_client)
+            neighbors = Calculate_neighbourhood_dashboard()
+                #Calculate_neighbourhood(df, nb_neighbours, final_list, data_client)
             plot_neigh(neighbors, final_list, nb_feats, data_client)
 
         if 'Positive clients (1)' in options:
