@@ -11,7 +11,7 @@ from sklearn.preprocessing import StandardScaler
 
 def main():
     URL = "http://127.0.0.1:5000/"
-    #URL = "https://happyhappyapy.herokuapp.com/"
+    # URL = "https://happyhappyapy.herokuapp.com/"
     # Display the title
     st.title('Loan application scoring dashboard')
 
@@ -136,7 +136,6 @@ def main():
         plt.xlabel('FEATURE IMPORTANCE')
         plt.ylabel('FEATURE NAMES')
         st.write(fig)
-
 
     def score_to_score_str(score):
         # markdown the status with color : green: accepted, red: refused, yellow : not in the db
@@ -314,7 +313,7 @@ def main():
 
         final_list = find_loc_feat_importance_dashboard()
         if yes_no_feat_local == 'Yes':
-            #hist_feats_loc(final_list, nb_feats, df_to_predict, data_client)
+            # hist_feats_loc(final_list, nb_feats, df_to_predict, data_client)
             find_loc_feat_importance_dashboard_as_list()
 
         if 'all clients mixed (1&0)' in options:
