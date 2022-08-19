@@ -18,7 +18,7 @@ def main():
     def id_client_side_bar():
         # Add the page with settings and store the settings
 
-        id_client = st.sidebar.number_input("Select the id client", 100001, 456250)
+        id_client = st.sidebar.number_input("Select the id client", 100005, 456202)
         return id_client
 
     def yes_no_feat_glob_side_bar():
