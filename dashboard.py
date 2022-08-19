@@ -294,12 +294,12 @@ def main():
             plot_neigh(neighbors, final_list, nb_feats, data_client)
 
         if 'Positive clients (1)' in options:
-            st.write("Positive clients (1) neighbours :")
+            st.write("Refused clients (1) neighbours :")
             neighbors_pos = Calculate_neighbourhood_positive(df, nb_neighbours, final_list, data_client)
             plot_neigh(neighbors_pos, final_list, nb_feats, data_client)
 
         if 'Negatives clients (0)' in options:
-            st.write("Negatives clients (0) neighbours :")
+            st.write("Authorised clients (0) neighbours :")
             neighbors_neg = Calculate_neighbourhood_negative(df, nb_neighbours, final_list, data_client)
             plot_neigh(neighbors_neg, final_list, nb_feats, data_client)
     else:
