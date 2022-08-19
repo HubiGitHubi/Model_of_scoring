@@ -139,6 +139,7 @@ def main():
         # Plot the global features importance
         st.write("Global feature importance")
         fig = plt.figure(figsize=(15, 25))
+        st.write(df_feat_importance)
         list_feat_importance = abs(df_feat_importance).sort_values(by='feat_importance', ascending=False)['Features'][0:15]
         plt.figure(figsize=(8, len(list_feat_importance)//3))
 
