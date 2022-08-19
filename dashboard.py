@@ -271,9 +271,9 @@ def main():
         nb_cols = 2
 
         if nb_feats//nb_cols == nb_feats/nb_cols:
-            nb_lignes = nb_feats//nb_cols+1
-        else:
             nb_lignes = nb_feats//nb_cols
+        else:
+            nb_lignes = nb_feats//nb_cols+1
 
         fig, axs = plt.subplots(nb_lignes, nb_cols, sharey=True)
 
