@@ -242,7 +242,6 @@ def find_loc_feat_importance_as_list():
     explanation = explainer.explain_instance(data_client.values.reshape(-1),
                                              model.predict_proba,
                                              num_features=nb_feats).as_list()
-    print(explanation)
     return jsonify(explanation)
 
 

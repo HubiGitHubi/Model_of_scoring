@@ -128,11 +128,11 @@ def main():
         # Requesting the API and saving the response
         response = requests.get(api_url)
         expl = pd.DataFrame(json.loads(response.content), columns=['Features', 'Feature_importance'])
-        st.write("Locals features importance")
-        fig = plt.figure(figsize=(12, len(expl)//3))
+        fig = plt.figure(figsize=(15, 25))
 
         sns.barplot(data=expl
-                    .sort_values(by='Feature_importance', ascending=False), x='Features', y='Feature_importance')
+                    .sort_values(by='Feature_importance', ascending=False), x='Feature_importance', y='Features')
+        plt.title("Local features importance")
         plt.xlabel('FEATURE IMPORTANCE')
         plt.ylabel('FEATURE NAMES')
         st.write(fig)
@@ -157,13 +157,12 @@ def main():
 
     def plot_feat_importance_values(df_feat_importance):
         # Plot the global features importance
-        st.write("Global feature importance")
-
         list_feat_importance = abs(df_feat_importance).sort_values(by='feat_importance', ascending=False).index[0:15]
         fig = plt.figure(figsize=(12, len(list_feat_importance)//3))
 
         sns.barplot(data=df_feat_importance.loc[list_feat_importance, :].reset_index()
                     .sort_values(by='feat_importance', ascending=False), x="feat_importance", y='index')
+        plt.title("Global features importance")
         plt.xlabel('FEATURE IMPORTANCE')
         plt.ylabel('FEATURE NAMES')
         st.write(fig)
