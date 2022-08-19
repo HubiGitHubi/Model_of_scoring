@@ -35,7 +35,7 @@ def main():
 
     def nb_feats_side_bar():
         nb_feats = st.sidebar.slider(
-            "How many local features do you want ?", 2, 15, step=1)
+            "How many local features do you want ?", 2, 14, step=2)
         return nb_feats
 
     def nb_neighbours():
