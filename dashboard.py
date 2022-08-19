@@ -53,6 +53,7 @@ def main():
     # ___________ List of api Requests functions
 
     st.cache()
+
     def get_df_to_predict_dashboard() -> object:
         # URL of the API + get_df_predict_values
         api_url = URL+'get_df_predict_values/'
@@ -63,6 +64,7 @@ def main():
         return df_to_predict
 
     st.cache()
+
     def get_df_dashboard() -> object:
         # URL of the API + get_df_values
         api_url = URL+'get_df_values/'
@@ -98,7 +100,9 @@ def main():
         proba_client = json.loads(response.content)
 
         return proba_client
+
     st.cache()
+
     def features_importance_global_dashboard():
         # URL of the API + Calculate_all_scores
         api_url = URL+"features_importance_global_values/"
@@ -138,12 +142,12 @@ def main():
     def plot_feat_importance_values(df_feat_importance):
         # Plot the global features importance
         st.write("Global feature importance")
-        fig = plt.figure(figsize=(15, 25))
 
         list_feat_importance = abs(df_feat_importance).sort_values(by='feat_importance', ascending=False).index[0:10]
-        plt.figure(figsize=(8, len(list_feat_importance)//3))
+        fig = plt.figure(figsize=(8, len(list_feat_importance)//3))
 
-        sns.barplot(data=df_feat_importance.loc[list_feat_importance, :].reset_index(), x="feat_importance", y='index')
+        sns.barplot(data=df_feat_importance.loc[list_feat_importance, :].reset_index()
+                    .sort_values(by='feat_importance', ascending=True), x="feat_importance", y='index')
         plt.ylabel('ylabel', size=30)
         plt.xlabel('FEATURE IMPORTANCE')
         plt.ylabel('FEATURE NAMES')
