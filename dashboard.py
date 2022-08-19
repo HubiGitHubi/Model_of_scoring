@@ -131,16 +131,22 @@ def main():
     def plot_proba_client(proba_client):
         # Plot the proba client
         st.write("Repayment rate")
-        st.success(str(round(proba_client[0], 2))+'%')
+        st.success(str(round(proba_client[0], 2)*100)+'%')
         st.write("Default rate")
-        st.error(str(round(proba_client[1], 2))+'%')
+        st.error(str(round(proba_client[1], 2)*100)+'%')
 
     def plot_feat_importance_values(df_feat_importance):
         # Plot the global features importance
         st.write("Global feature importance")
         fig = plt.figure(figsize=(15, 25))
-        df_feat_importance_abs = abs(df_feat_importance).sort_values(by='feat_importance', ascending=False).iloc[0:15]
-        sns.barplot(data=df_feat_importance_abs.reset_index(), x="feat_importance", y='index')
+        list_feat_importance = abs(df_feat_importance).sort_values(by='feat_importance', ascending=False)['Features'][0:15]
+        plt.figure(figsize=(8, len(list_feat_importance)//3))
+
+        sns.barplot(data=df_feat_importance[list_feat_importance].reset_index(), x="feat_importance", y='index')
+        plt.ylabel('ylabel', fontsize=16)
+        plt.xlabel('FEATURE IMPORTANCE')
+        plt.ylabel('FEATURE NAMES')
+        #plt.show()
         st.write(fig)
 
     def hist_feats_loc(final_list, nb_feats, df_to_predict, data_client):
