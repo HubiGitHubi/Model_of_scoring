@@ -140,12 +140,11 @@ def main():
         st.write("Global feature importance")
         fig = plt.figure(figsize=(15, 25))
 
-        list_feat_importance = abs(df_feat_importance).sort_values(by='feat_importance', ascending=False).index[0:15]
-        st.write(list_feat_importance)
-        #plt.figure(figsize=(8, len(list_feat_importance)//3))
+        list_feat_importance = abs(df_feat_importance).sort_values(by='feat_importance', ascending=False).index[0:10]
+        plt.figure(figsize=(8, len(list_feat_importance)//3))
 
         sns.barplot(data=df_feat_importance.loc[list_feat_importance, :].reset_index(), x="feat_importance", y='index')
-        plt.ylabel('ylabel', fontsize=16)
+        plt.ylabel('ylabel', size=30)
         plt.xlabel('FEATURE IMPORTANCE')
         plt.ylabel('FEATURE NAMES')
         st.write(fig)
