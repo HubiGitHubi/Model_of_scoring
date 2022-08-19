@@ -281,8 +281,9 @@ def main():
             ax.set_title(_c)
             fig.set_tight_layout(True)
         st.pyplot(fig)
-
         if len(final_list) > 8:
+            nb_lignes = min(3, nb_lignes-1)
+
             fig1, axs1 = plt.subplots(nb_lignes, nb_cols, sharey=True)
 
             for i, _c in enumerate(final_list[9:]):
