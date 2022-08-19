@@ -10,8 +10,8 @@ from sklearn.preprocessing import StandardScaler
 
 
 def main():
-    # URL = "http://127.0.0.1:5000/"
-    URL = "https://happyhappyapy.herokuapp.com/"
+    URL = "http://127.0.0.1:5000/"
+    #URL = "https://happyhappyapy.herokuapp.com/"
     # Display the title
     st.title('Loan application scoring dashboard')
 
@@ -127,10 +127,16 @@ def main():
         api_url = URL+"find_loc_feat_importance_values_as_list/?id_client="+str(id_client)+"&nb_feats="+str(nb_feats)
         # Requesting the API and saving the response
         response = requests.get(api_url)
-        expl = pd.Series(json.loads(response.content))
+        expl = pd.DataFrame(json.loads(response.content), columns=['Features', 'Feature_importance'])
         st.write("Locals features importance")
-        with plt.style.context("ggplot"):
-            expl.as_pyplot_figure()
+        fig = plt.figure(figsize=(12, len(expl)//3))
+
+        sns.barplot(data=expl
+                    .sort_values(by='Feature_importance', ascending=False), x='Features', y='Feature_importance')
+        plt.xlabel('FEATURE IMPORTANCE')
+        plt.ylabel('FEATURE NAMES')
+        st.write(fig)
+
 
     def score_to_score_str(score):
         # markdown the status with color : green: accepted, red: refused, yellow : not in the db
@@ -153,8 +159,8 @@ def main():
         # Plot the global features importance
         st.write("Global feature importance")
 
-        list_feat_importance = abs(df_feat_importance).sort_values(by='feat_importance', ascending=False).index[0:10]
-        fig = plt.figure(figsize=(8, len(list_feat_importance)//3))
+        list_feat_importance = abs(df_feat_importance).sort_values(by='feat_importance', ascending=False).index[0:15]
+        fig = plt.figure(figsize=(12, len(list_feat_importance)//3))
 
         sns.barplot(data=df_feat_importance.loc[list_feat_importance, :].reset_index()
                     .sort_values(by='feat_importance', ascending=False), x="feat_importance", y='index')
