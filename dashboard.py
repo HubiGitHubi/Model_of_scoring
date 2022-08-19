@@ -187,16 +187,7 @@ def main():
             ax.set_title(_c)
             fig.set_tight_layout(True)
 
-        if len(final_list) > 8:
-            for i, _c in enumerate(final_list)[9:]:
-                ax = axs.flat[i]
-                ax.hist(df_to_predict[[_c]], bins=20)
-                ax.axvline(data_client[_c][0], color='red')
 
-                ax.set_title(_c)
-                fig.set_tight_layout(True)
-
-        st.pyplot(fig)
 
     # find nearest neighbors among the training set
 
@@ -287,13 +278,26 @@ def main():
 
         fig, axs = plt.subplots(nb_lignes, nb_cols, sharey=True)
 
-        for i, _c in enumerate(final_list):
+        for i, _c in enumerate(final_list[0:8]):
             ax = axs.flat[i]
             ax.axvline(data_client[_c][0], color='red')
             ax.hist(neighbors[[_c]])
             ax.set_title(_c)
             fig.set_tight_layout(True)
         st.pyplot(fig)
+
+        if len(final_list) > 8:
+            for i, _c in enumerate(final_list[9:]):
+                ax = axs.flat[i]
+                ax.axvline(data_client[_c][0], color='red')
+                ax.hist(neighbors[[_c]])
+                ax.set_title(_c)
+                fig.set_tight_layout(True)
+            st.pyplot(fig)
+
+
+
+
 
     # Main program
     # Return values from button and settings page
