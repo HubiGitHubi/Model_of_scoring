@@ -270,11 +270,7 @@ def main():
         # Plot local most important feats for the number of chosen neighbours
 
         nb_cols = 2
-
-        if nb_feats//nb_cols == nb_feats/nb_cols:
-            nb_lignes = nb_feats//nb_cols
-        else:
-            nb_lignes = nb_feats//nb_cols+1
+        nb_lignes = min(nb_feats//nb_cols, 8)
 
         fig, axs = plt.subplots(nb_lignes, nb_cols, sharey=True)
 
