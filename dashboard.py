@@ -146,7 +146,6 @@ def main():
         plt.ylabel('ylabel', fontsize=16)
         plt.xlabel('FEATURE IMPORTANCE')
         plt.ylabel('FEATURE NAMES')
-        #plt.show()
         st.write(fig)
 
     def hist_feats_loc(final_list, nb_feats, df_to_predict, data_client):
