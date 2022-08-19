@@ -270,7 +270,7 @@ def main():
         # Plot local most important feats for the number of chosen neighbours
 
         nb_cols = 2
-        nb_lignes = min(nb_feats//nb_cols, 8)
+        nb_lignes = min(nb_feats//nb_cols, 4)
 
         fig, axs = plt.subplots(nb_lignes, nb_cols, sharey=True)
 
@@ -283,13 +283,15 @@ def main():
         st.pyplot(fig)
 
         if len(final_list) > 8:
+            fig1, axs1 = plt.subplots(nb_lignes, nb_cols, sharey=True)
+
             for i, _c in enumerate(final_list[9:]):
-                ax = axs.flat[i]
-                ax.axvline(data_client[_c][0], color='red')
-                ax.hist(neighbors[[_c]])
-                ax.set_title(_c)
-                fig.set_tight_layout(True)
-            st.pyplot(fig)
+                ax1 = axs1.flat[i]
+                ax1.axvline(data_client[_c][0], color='red')
+                ax1.hist(neighbors[[_c]])
+                ax1.set_title(_c)
+                fig1.set_tight_layout(True)
+            st.pyplot(fig1)
 
 
 
