@@ -51,6 +51,7 @@ def main():
         return options
 
     # ___________ List of api Requests functions
+    st.cache()
     def get_df_to_predict_dashboard() -> object:
         # URL of the API + get_df_predict_values
         api_url = URL+'get_df_predict_values/'
@@ -60,6 +61,7 @@ def main():
 
         return df_to_predict
 
+    st.cache()
     def get_df_dashboard() -> object:
         # URL of the API + get_df_values
         api_url = URL+'get_df_values/'
