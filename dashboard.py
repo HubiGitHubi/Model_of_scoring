@@ -180,6 +180,10 @@ def main():
             data_client[final_list]), columns=final_list)
 
         # return the closest neighbors final feats list (nb_neighbours chosen by the user)
+        if nb_neighbours > len(df_all):
+            st.write('(max positives neighbours :', len(df_all), ')')
+            nb_neighbours = len(df_all)
+
         neighbors = NearestNeighbors(n_neighbors=nb_neighbours).fit(df_all_std)
 
         index_neighbors = list(neighbors.kneighbors(X=data_client_std,
