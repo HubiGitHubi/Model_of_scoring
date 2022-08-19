@@ -9,7 +9,6 @@ import pandas as pd
 from flask import jsonify, Flask, request
 
 
-
 # Network URL: http: // 192.168.1.27:8501
 
 def get_my_model() -> object:
@@ -232,6 +231,19 @@ def find_loc_feat_importance():
             a = 1
 
     return jsonify(final_list)
+
+
+@app.route('/find_loc_feat_importance_values_as_list/')
+def find_loc_feat_importance_as_list():
+    # Return the name of most important locale features
+    id_client = int(request.args.get('id_client'))
+    nb_feats = int(request.args.get('nb_feats'))
+    data_client = data_clients_std[df_to_predict.SK_ID_CURR == id_client]
+    explanation = explainer.explain_instance(data_client.values.reshape(-1),
+                                             model.predict_proba,
+                                             num_features=nb_feats).as_list()
+
+    return jsonify(explanation)
 
 
 if __name__ == "__main__":

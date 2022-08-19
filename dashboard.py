@@ -122,6 +122,16 @@ def main():
 
         return final_list
 
+    def find_loc_feat_importance_dashboard_as_list():
+        # URL of the API + Calculate_all_scores
+        api_url = URL+"find_loc_feat_importance_values_as_list/?id_client="+str(id_client)+"&nb_feats="+str(nb_feats)
+        # Requesting the API and saving the response
+        response = requests.get(api_url)
+        expl = pd.Series(json.loads(response.content))
+        st.write("Locals features importance")
+        with plt.style.context("ggplot"):
+            expl.as_pyplot_figure()
+
     def score_to_score_str(score):
         # markdown the status with color : green: accepted, red: refused, yellow : not in the db
         st.markdown("loan status :")
@@ -299,7 +309,8 @@ def main():
 
         final_list = find_loc_feat_importance_dashboard()
         if yes_no_feat_local == 'Yes':
-            hist_feats_loc(final_list, nb_feats, df_to_predict, data_client)
+            #hist_feats_loc(final_list, nb_feats, df_to_predict, data_client)
+            find_loc_feat_importance_dashboard_as_list()
 
         if 'all clients mixed (1&0)' in options:
             st.write("all clients mixed (1&0) neighbours :")
