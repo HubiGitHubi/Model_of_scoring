@@ -147,8 +147,7 @@ def main():
         fig = plt.figure(figsize=(8, len(list_feat_importance)//3))
 
         sns.barplot(data=df_feat_importance.loc[list_feat_importance, :].reset_index()
-                    .sort_values(by='feat_importance', ascending=True), x="feat_importance", y='index')
-        plt.ylabel('ylabel', size=30)
+                    .sort_values(by='feat_importance', ascending=False), x="feat_importance", y='index')
         plt.xlabel('FEATURE IMPORTANCE')
         plt.ylabel('FEATURE NAMES')
         st.write(fig)
