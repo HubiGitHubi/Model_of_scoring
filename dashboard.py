@@ -10,7 +10,7 @@ from sklearn.preprocessing import StandardScaler
 
 
 def main():
-    #URL = "http://127.0.0.1:5000/"
+    # URL = "http://127.0.0.1:5000/"
     URL = "https://happyhappyapy.herokuapp.com/"
     # Display the title
     st.title('Loan application scoring dashboard')
@@ -51,6 +51,7 @@ def main():
         return options
 
     # ___________ List of api Requests functions
+
     st.cache()
     def get_df_to_predict_dashboard() -> object:
         # URL of the API + get_df_predict_values
@@ -97,7 +98,7 @@ def main():
         proba_client = json.loads(response.content)
 
         return proba_client
-
+    st.cache()
     def features_importance_global_dashboard():
         # URL of the API + Calculate_all_scores
         api_url = URL+"features_importance_global_values/"
