@@ -40,10 +40,18 @@ def get_train_test() -> object:
 
 def Calculate_all_scores(df_to_predict, model):
     # Calculate score for every client and store it in df
+    # The client is considerate negative if the model predicts 60% negative or more
     data_clients_std = pd.DataFrame(StandardScaler().fit(df.drop(['SK_ID_CURR', 'TARGET'], axis=1)).transform(
         df_to_predict.drop(['SK_ID_CURR'], axis=1)),
         columns=df_to_predict.drop(['SK_ID_CURR'], axis=1).columns)
-    df_to_predict['score'] = model.predict(data_clients_std.values)
+
+    x_test_predict = pd.DataFrame(model.predict_proba(data_clients_std.values), columns=['negative', 'positive'])
+    x_test_predict['pred'] = -1
+    x_test_predict['pred'][x_test_predict['negative'] >= .6] = 1
+    x_test_predict['pred'][x_test_predict['negative'] < .6] = 0
+    df_to_predict['score'] = x_test_predict['pred'].values
+    df_to_predict['score'] = model.predict_proba(data_clients_std.values)
+
     return data_clients_std
 
 
