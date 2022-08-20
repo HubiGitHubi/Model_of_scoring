@@ -47,8 +47,8 @@ def Calculate_all_scores(df_to_predict, model):
 
     x_test_predict = pd.DataFrame(model.predict_proba(data_clients_std.values), columns=['negative', 'positive'])
     x_test_predict['pred'] = -1
-    x_test_predict['pred'][x_test_predict['negative'] >= .6] = 1
-    x_test_predict['pred'][x_test_predict['negative'] < .6] = 0
+    x_test_predict['pred'][x_test_predict['negative'] >= .6] = 0
+    x_test_predict['pred'][x_test_predict['negative'] < .6] = 1
     df_to_predict['score'] = x_test_predict['pred'].values
 
     return data_clients_std
