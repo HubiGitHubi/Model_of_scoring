@@ -152,9 +152,9 @@ def main():
     def plot_proba_client(proba_client):
         # Plot the proba client
         st.write("Repayment rate")
-        st.success(str(round(proba_client[0], 2)*100)+'%')
+        st.success(str(round(proba_client[0]*100, 2))+'%')
         st.write("Default rate")
-        st.error(str(round(proba_client[1], 2)*100)+'%')
+        st.error(str(round(proba_client[1]*100, 2))+'%')
 
     def plot_feat_importance_values(df_feat_importance):
         # Plot the global features importance
