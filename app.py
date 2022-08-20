@@ -45,10 +45,10 @@ def Calculate_all_scores(df_to_predict, model):
         df_to_predict.drop(['SK_ID_CURR'], axis=1)),
         columns=df_to_predict.drop(['SK_ID_CURR'], axis=1).columns)
 
-    x_test_predict = pd.DataFrame(model.predict_proba(data_clients_std.values), columns=['positive', 'negative'])
+    x_test_predict = pd.DataFrame(model.predict_proba(data_clients_std.values), columns=['negative', 'positive'])
     x_test_predict['pred'] = -1
-    x_test_predict['pred'][x_test_predict['positive'] >= .6] = 1
-    x_test_predict['pred'][x_test_predict['positive'] < .6] = 0
+    x_test_predict['pred'][x_test_predict['negative'] >= .6] = 1
+    x_test_predict['pred'][x_test_predict['negative'] < .6] = 0
     df_to_predict['score'] = x_test_predict['pred'].values
 
     return data_clients_std
